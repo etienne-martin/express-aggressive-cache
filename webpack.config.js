@@ -2,7 +2,7 @@ const path = require("path");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const nodeExternals = require("webpack-node-externals");
 
-module.exports = (env, argv) => {
+module.exports = (env, argv = {}) => {
   const isDev = argv && argv.mode !== "production";
 
   return {
@@ -13,7 +13,8 @@ module.exports = (env, argv) => {
     },
     output: {
       filename: "[name].js",
-      path: path.resolve(__dirname, "dist")
+      path: path.resolve(__dirname, "dist"),
+      libraryTarget: "commonjs"
     },
     resolve: {
       extensions: [".ts", ".js"]
