@@ -132,3 +132,46 @@ test("should not cache response with invalid cache-control header", async () => 
   expect(res.status).toBe(200);
   expect(res.header["x-cache"]).toEqual("MISS");
 });
+
+test("should not cache POST requests", async () => {
+  const url = "/text";
+
+  await request.post(url);
+  const res = await request.post(url);
+
+  expect(res.status).toBe(200);
+  expect(res.header["x-cache"]).toEqual("MISS");
+});
+
+test("should not cache PUT requests", async () => {
+  const url = "/text";
+
+  await request.put(url);
+  const res = await request.put(url);
+
+  expect(res.status).toBe(200);
+  expect(res.header["x-cache"]).toEqual("MISS");
+});
+
+test("should not cache PATCH requests", async () => {
+  const url = "/text";
+
+  await request.patch(url);
+  const res = await request.patch(url);
+
+  expect(res.status).toBe(200);
+  expect(res.header["x-cache"]).toEqual("MISS");
+});
+
+// ----------- REDIS ----------- //
+
+test("should cache responses in redis", async done => {
+  const url = "/redis";
+  await request.get(url);
+  const res = await request.get(url);
+
+  expect(res.status).toBe(200);
+  expect(res.header["x-cache"]).toEqual("HIT");
+  expect(res.text).toEqual("hello world");
+  done();
+});

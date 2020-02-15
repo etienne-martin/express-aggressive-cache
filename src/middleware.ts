@@ -33,7 +33,10 @@ export const expressAggressiveCache = (options?: Options) => {
     /**
      * Should only cache GET requests
      */
-    if (req.method !== "GET") return next();
+    if (req.method !== "GET") {
+      res.setHeader("X-Cache", "MISS");
+      return next();
+    }
 
     const requestId = nanoid();
     const originalWrite: any = res.write;
