@@ -3,6 +3,10 @@ import { app } from "./server";
 
 const request = supertest(app);
 
+// TODO: test static files
+// TODO: test gzipped responses
+// TODO: test normalized urls (query params)
+
 describe("Default configuration", () => {
   test("should cache text responses", async () => {
     const url = "/default/text";
