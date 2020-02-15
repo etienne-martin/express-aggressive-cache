@@ -33,7 +33,7 @@
     "predev": "yarn cleanup",
     "prebuild": "yarn cleanup",
     "cleanup": "rm -rf ./dist",
-    "test": "jest src --coverage --verbose --runInBand",
+    "test": "jest src --coverage --verbose",
     "test:watch": "jest src --coverage --verbose --watch",
     "test:server": "ts-node-dev ./src/tests/start.ts",
     "coverage": "coveralls < ./coverage/lcov.info"
