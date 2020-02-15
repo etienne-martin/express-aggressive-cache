@@ -1,19 +1,22 @@
 import http from "http";
 import { Request, Response } from "express";
 
-export type DefaultGetCacheKey = (req: Request, res: Response) => string;
+export type DefaultGetCacheKey = (args: {
+  req: Request;
+  res: Response;
+}) => string;
 
-type GetCacheKeySync = (
-  req: Request,
-  res: Response,
-  normalizedUrl: string
-) => string;
+type GetCacheKeySync = (args: {
+  req: Request;
+  res: Response;
+  normalizedUrl: string;
+}) => string;
 
-type GetCacheKeyAsync = (
-  req: Request,
-  res: Response,
-  normalizedUrl: string
-) => Promise<string>;
+type GetCacheKeyAsync = (args: {
+  req: Request;
+  res: Response;
+  normalizedUrl: string;
+}) => Promise<string>;
 
 export type GetCacheKey = GetCacheKeySync | GetCacheKeyAsync;
 

@@ -1,9 +1,8 @@
-import { Request } from "express";
 import { URL } from "url";
 import normalizeUrl from "normalize-url";
 import { DefaultGetCacheKey } from "./types";
 
-export const defaultGetCacheKey: DefaultGetCacheKey = (req: Request) => {
+export const defaultGetCacheKey: DefaultGetCacheKey = ({ req }) => {
   const url = new URL(req.originalUrl, "http://localhost").toString();
   const { origin } = new URL(url);
 

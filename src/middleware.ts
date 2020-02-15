@@ -32,8 +32,8 @@ export const expressAggressiveCache = (options?: Options) => {
     const originalWrite: any = res.write;
     const originalEnd: any = res.end;
     const chunkQueue = new Queue();
-    const normalizedUrl = defaultGetCacheKey(req, res);
-    const cacheKey = await getCacheKey(req, res, normalizedUrl);
+    const normalizedUrl = defaultGetCacheKey({ req, res });
+    const cacheKey = await getCacheKey({ req, res, normalizedUrl });
     const cachedResponse = await responseBucket.get(cacheKey);
 
     // ----------- CACHE HIT ----------- //
