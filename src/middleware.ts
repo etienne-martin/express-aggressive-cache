@@ -14,9 +14,16 @@ const defaultOptions = {
 };
 
 export const expressAggressiveCache = (options?: Options) => {
-  const { maxAge: defaultMaxAge, store, getCacheKey } = {
+  const { debug, maxAge: defaultMaxAge, store, getCacheKey } = {
     ...defaultOptions,
     ...options
+  };
+
+  const log = (...msg: any[]) => {
+    if (!debug) return;
+
+    // eslint-disable-next-line no-console
+    console.log(...msg);
   };
 
   const responseBucket = store<CachedResponse>();
@@ -40,18 +47,18 @@ export const expressAggressiveCache = (options?: Options) => {
 
     if (cachedResponse?.isSealed) {
       if (await chunkBucket.has(cachedResponse.chunks)) {
-        console.log("HIT:", cacheKey);
+        log("HIT:", cacheKey);
         await returnCachedResponse(res, cachedResponse, chunkBucket);
         return;
       } else {
-        console.log("Missing chunk!");
+        log("Missing chunk!");
       }
     }
 
     // ----------- CACHE MISS ----------- //
 
     res.setHeader("X-Cache", "MISS");
-    console.log("MISS:", cacheKey);
+    log("MISS:", cacheKey);
 
     const onWrite = (chunk: Chunk | undefined) => {
       if (chunk !== undefined) {
@@ -63,6 +70,7 @@ export const expressAggressiveCache = (options?: Options) => {
               res,
               cacheKey,
               defaultMaxAge,
+              log,
               responseBucket,
               chunkBucket,
               chunkQueue
@@ -89,6 +97,7 @@ export const expressAggressiveCache = (options?: Options) => {
             requestId,
             cacheKey,
             res,
+            log,
             responseBucket
           })
         )

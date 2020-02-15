@@ -31,11 +31,13 @@ export const sealChunks = async ({
   requestId,
   cacheKey,
   res,
+  log,
   responseBucket
 }: {
   requestId: string;
   cacheKey: string;
   res: Response;
+  log: typeof console.log;
   responseBucket: Store<CachedResponse>;
 }) => {
   if (!res.aggressiveCache?.chunks?.length) return;
@@ -53,7 +55,7 @@ export const sealChunks = async ({
       cachedResponse.maxAge
     );
 
-    console.log("SEALED CACHE:", cacheKey);
+    log("SEALED CACHE:", cacheKey);
   }
 };
 
@@ -63,6 +65,7 @@ export const cacheChunk = async ({
   res,
   cacheKey,
   defaultMaxAge,
+  log,
   responseBucket,
   chunkBucket,
   chunkQueue
@@ -72,6 +75,7 @@ export const cacheChunk = async ({
   res: Response;
   cacheKey: string;
   defaultMaxAge: number | undefined;
+  log: typeof console.log;
   responseBucket: Store<CachedResponse>;
   chunkBucket: Store<Chunk>;
   chunkQueue: Queue;
@@ -109,9 +113,9 @@ export const cacheChunk = async ({
         chunks: [chunkId]
       };
 
-      console.log("CACHED CHUNK (NEW CACHE ENTRY):", cacheKey);
+      log("CACHED CHUNK (NEW CACHE ENTRY):", cacheKey);
     } catch (err) {
-      console.log(err);
+      log(err);
     }
 
     return;
@@ -125,15 +129,15 @@ export const cacheChunk = async ({
 
       res.aggressiveCache?.chunks?.push(chunkId);
 
-      console.log("CACHED CHUNK:", cacheKey);
+      log("CACHED CHUNK:", cacheKey);
     } catch (err) {
-      console.log(err);
+      log(err);
     }
 
     return;
   }
 
-  console.log("ALREADY CACHING:", cacheKey);
+  log("ALREADY CACHING:", cacheKey);
 
   await chunkQueue.destroy();
 };
