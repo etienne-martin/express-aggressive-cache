@@ -65,6 +65,9 @@ export const redisStore = (options: RedisStoreOptions) => {
     ...options
   };
 
+  // eslint-disable-next-line no-console
+  console.log(client.status);
+
   const redlock = new Redlock([client], {
     retryCount: 0
   });

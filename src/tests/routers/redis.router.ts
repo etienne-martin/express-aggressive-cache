@@ -7,7 +7,7 @@ export const redisRouter = Router();
 redisRouter.use(
   expressAggressiveCache({
     store: redisStore({
-      client: new Redis("//redis:6379")
+      client: new Redis("//localhost:6379")
     })
   })
 );
