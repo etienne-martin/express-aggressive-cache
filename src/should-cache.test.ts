@@ -1,7 +1,7 @@
 import { shouldCache } from "./should-cache";
 
 describe("shouldCache", () => {
-  test("should fallback to caching if no cache headers are found", () => {
+  test("should cache if cache-control header is not defined", () => {
     expect(shouldCache({})).toEqual(true);
   });
 });

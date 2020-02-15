@@ -4,7 +4,12 @@ module.exports = {
     "^.+\\.tsx?$": "ts-jest"
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  coveragePathIgnorePatterns: ["/node_modules/", "/coverage/", "/dist/"],
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/coverage/",
+    "/dist/",
+    "/src/tests/"
+  ],
   coverageThreshold: {
     global: {
       branches: 1,

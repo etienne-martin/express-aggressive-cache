@@ -76,7 +76,8 @@ export const cacheChunk = async ({
   chunkBucket: Store<Chunk>;
   chunkQueue: Queue;
 }) => {
-  const cacheControl = parseCacheControl(`${res.getHeader("Cache-Control")}`);
+  const cacheControlHeader = `${res.getHeader("Cache-Control") || ""}`;
+  const cacheControl = parseCacheControl(cacheControlHeader);
 
   if (!shouldCache(cacheControl)) return;
 
