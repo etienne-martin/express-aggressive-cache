@@ -5,6 +5,7 @@ executors:
     docker:
       - image: circleci/node:12.6.0
       - image: circleci/redis:5.0.3-alpine
+        name: redis
     working_directory: ~/express-aggressive-cache
 
 jobs:

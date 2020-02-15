@@ -1,0 +1,10 @@
+version: "3.4"
+
+services:
+  pfu-redis:
+    image: redis:5.0.3-alpine
+    container_name: express-aggressive-cache-redis
+    restart: always
+    command: redis-server
+    ports:
+      - 6379:6379

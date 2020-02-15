@@ -10,3 +10,5 @@ webpack.config.js
 jest.config.js
 .nvmrc
 .eslintrc.js
+redis.sh
+docker-compose.yml
