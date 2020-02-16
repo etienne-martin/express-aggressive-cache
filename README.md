@@ -109,7 +109,7 @@ cache({
 
 A flag to toggle debug logs. Defaults to `false`.
 
-## Memory Store
+## `memoryStore(options)`
 
 By default, the cache will be stored in memory (RAM). Since everything is stored in memory, the more cache, the higher the RAM usage. You can use the `max` option to mitigate this. It will delete the least-recently-used items as it reaches the limit.
 
@@ -131,7 +131,7 @@ cache({
 });
 ```
 
-## Redis Store
+## `redisStore(options)`
 
 It is recommended that redis be configured with a `allkeys-lru` eviction policy to prevent random keys from being deleted while serving responses.
 
@@ -209,9 +209,13 @@ You can also run the following command to start the http server that is used to 
 yarn test:server
 ``` 
 
-#### Redis Server
+#### Local Redis Server
 
 A local redis instance is needed when running the test suite. You can use the provided [redis.sh](https://github.com/etienne-martin/express-aggressive-cache/blob/master/redis.sh) script to run a redis container using docker (Make sure docker is installed and running).
+
+```bash
+sh redis.sh
+```
 
 ## Authors
 
