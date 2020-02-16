@@ -32,7 +32,10 @@ import cache from "express-aggressive-cache";
 
 const app = express();
 
-app.use(cache());
+app.use(cache({
+  // Cache responses for 1 hour
+  maxAge: 3600
+}));
 
 app.get("/hello", (req, res) => {
   res.json({
