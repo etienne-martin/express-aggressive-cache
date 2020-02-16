@@ -1,6 +1,7 @@
 import { Router } from "express";
 import Redis from "ioredis";
-import { expressAggressiveCache, redisStore } from "../../";
+import { expressAggressiveCache, redisStore } from "../index";
+import { sharedRoutes } from "./shared.routes";
 
 export const redisRouter = Router();
 
@@ -12,6 +13,4 @@ redisRouter.use(
   })
 );
 
-redisRouter.get("/", (req, res) => {
-  res.send("hello world");
-});
+redisRouter.use(sharedRoutes);

@@ -1,20 +1,10 @@
-import supertest from "supertest";
-import { app } from "./server";
+import Redis from "ioredis";
+import { sharedTests } from "./test.shared";
 
-const request = supertest(app);
-
-describe("Redis", () => {
-  test("should cache responses in redis", async done => {
-    const url = "/redis";
-    await request.get(url);
-
-    setTimeout(async () => {
-      const res = await request.get(url);
-
-      expect(res.status).toBe(200);
-      expect(res.header["x-cache"]).toEqual("HIT");
-      expect(res.text).toEqual("hello world");
-      done();
-    }, 3000);
-  });
+beforeAll(async () => {
+  // Reset redis db before tests
+  const client = new Redis("//localhost:6379");
+  await client.flushall();
 });
+
+sharedTests("redis");

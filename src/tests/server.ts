@@ -1,6 +1,6 @@
 import express from "express";
-import { redisRouter } from "./routers/redis.router";
-import { defaultRouter } from "./routers/default.router";
+import { redisRouter } from "./redis.router";
+import { defaultRouter } from "./default.router";
 
 export const app = express();
 
