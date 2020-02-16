@@ -140,6 +140,8 @@ cache({
 });
 ```
 
+---
+
 #### `getCacheKey`
 
 Function used to generate cache keys.
