@@ -1,5 +1,7 @@
 # express aggressive cache
 
+An aggressive yet obedient cache middleware for express.
+
 [![Coveralls github](https://img.shields.io/coveralls/github/etienne-martin/express-aggressive-cache.svg)](https://coveralls.io/github/etienne-martin/express-aggressive-cache)
 [![CircleCI build](https://img.shields.io/circleci/project/github/etienne-martin/express-aggressive-cache.svg)](https://circleci.com/gh/etienne-martin/express-aggressive-cache)
 [![node version](https://img.shields.io/node/v/express-aggressive-cache.svg)](https://www.npmjs.com/package/express-aggressive-cache)
@@ -8,8 +10,9 @@
 
 ## Features
 
+- Plug and Play
+- Multiple data stores (in-memory and redis)
 - High throughput
-- Supports multiple data stores (in-memory and redis)
 - Thoroughly tested
 
 ## Getting Started
@@ -24,7 +27,7 @@ npm install express-aggressive-cache
 
 ### Usage
 
-**Example** - server-wide caching:
+**Example** - application-wide caching:
 
 ```javascript
 import express from "express";
@@ -44,9 +47,15 @@ app.get("/hello", (req, res) => {
     hello: "world"
   });
 });
+
+app.get("/ping", (req, res) => {
+  res.json({
+    ping: "pong"
+  });
+});
 ```
 
-**Example** - per endpoint caching:
+**Example** - caches a specific endpoint:
 
 ```javascript
 import express from "express";
@@ -59,25 +68,6 @@ app.get("/hello", cache(), (req, res) => {
     hello: "world"
   });
 });
-```
-
-**Example** - store the cache in redis:
-
-```javascript
-import express from "express";
-import Redis from "ioredis";
-import cache, { redisStore } from "express-aggressive-cache";
-
-const app = express();
-
-app.use(
-  cache({
-    store: redisStore({
-      client: new Redis("//localhost:6379"),
-      prefix: "api-cache"
-    })
-  })
-);
 ```
 
 ## Options
@@ -114,7 +104,7 @@ cache({
 
 #### `debug`
 
-A flag to toggle debug logs. Defaults to false.
+A flag to toggle debug logs. Defaults to `false`.
 
 ## Memory Store
 
