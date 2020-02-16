@@ -118,9 +118,9 @@ A flag to toggle debug logs. Defaults to false.
 
 ## Memory Store
 
-By default, the cache will be stored in memory (RAM). Since everything is stored in memory, the more cache, the higher the memory usage. You can use the `max` option to mitigate this. It will delete the least-recently-used items as it reaches the limit.
+By default, the cache will be stored in memory (RAM). Since everything is stored in memory, the more cache, the higher the RAM usage. You can use the `max` option to mitigate this. It will delete the least-recently-used items as it reaches the limit.
 
-This is not suitable for applications that scale horizontally as the cache will be duplicated across multiple nodes and can result in a high memory usage in your cluster.
+Note: In-memory caching is not suitable for applications that scale horizontally as the cache will be duplicated across multiple nodes and can result in a high memory usage within your cluster.
 
 **We recommend using a redis data store if you have multiple instances of your application running behind a load balancer.**
 
@@ -129,6 +129,8 @@ This is not suitable for applications that scale horizontally as the cache will 
 The maximum size of the cache, checked by applying the length function to all values in the cache. Defaults to `Infinity`.
 
 ## Redis Store
+
+Note: performance will be impacted when caching large responses like files and images. We do not recommend caching anything above 5mb.
 
 #### `client`
 
