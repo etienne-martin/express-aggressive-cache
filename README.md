@@ -28,11 +28,11 @@ npm install express-aggressive-cache
 
 ```javascript
 import express from "express";
-import expressAggressiveCache from "express-aggressive-cache";
+import cache from "express-aggressive-cache";
 
 const app = express();
 
-app.use(expressAggressiveCache());
+app.use(cache());
 
 app.get("/hello", (req, res) => {
   res.json({
@@ -45,15 +45,32 @@ app.get("/hello", (req, res) => {
 
 ```javascript
 import express from "express";
-import expressAggressiveCache from "express-aggressive-cache";
+import cache from "express-aggressive-cache";
 
 const app = express();
 
-app.get("/hello", expressAggressiveCache(), (req, res) => {
+app.get("/hello", cache(), (req, res) => {
   res.json({
     hello: "world"
   });
 });
+```
+
+**Example** - limit the amount of entries in the cache:
+
+```javascript
+import express from "express";
+import cache, { memoryStore } from "express-aggressive-cache";
+
+const app = express();
+
+app.use(
+  cache({
+    store: memoryStore({
+      max: 500
+    })
+  })
+);
 ```
 
 **Example** - store cache in redis:
@@ -61,12 +78,12 @@ app.get("/hello", expressAggressiveCache(), (req, res) => {
 ```javascript
 import express from "express";
 import Redis from "ioredis";
-import expressAggressiveCache, { redisStore } from "express-aggressive-cache";
+import cache, { redisStore } from "express-aggressive-cache";
 
 const app = express();
 
 app.use(
-  expressAggressiveCache({
+  cache({
     store: redisStore({
       client: new Redis("//localhost:6379"),
       prefix: "api-cache"
@@ -115,7 +132,7 @@ Known compatible and tested clients:
 
 Key prefix in Redis (default: "cache").
 
-This prefix appends to whatever prefix you may have set on the client itself.  
+This prefix appends to whatever prefix you may have set on the client itself.
 
 Note: You may need unique prefixes for different applications sharing the same Redis instance.
 
