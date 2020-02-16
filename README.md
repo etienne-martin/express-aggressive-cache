@@ -37,7 +37,6 @@ const app = express();
 
 app.use(
   cache({
-    // Cache responses for 1 hour
     maxAge: 3600
   })
 );
@@ -66,7 +65,7 @@ app.get("/hello", cache(), (req, res) => {
 
 ## Cache Control
 
-This middleware uses the [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) header to determine whether or not a response should be cached.
+This middleware uses the [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) header to determine whether or not a response should be cached and for how long.
 
 You can specify for how long a response should be cached by specifying a `max-age` with a value greater than zero.
 
@@ -134,6 +133,8 @@ cache({
 
 ## Redis Store
 
+It is recommended to configure redis with a `allkeys-lru` eviction policy to prevent random keys from being evicted while serving responses.
+
 Note: performance will be impacted when caching large responses like files and images. We do not recommend caching anything above 5mb.
 
 #### `client`
@@ -187,6 +188,30 @@ When contributing to this project, please first discuss the change you wish to m
 Update the [README.md](https://github.com/etienne-martin/express-aggressive-cache/blob/master/README.md) with details of changes to the library.
 
 Execute `yarn test` and update the tests if needed.
+
+### Testing
+
+Run the full test suite:
+
+```bash
+yarn test
+```
+
+Run tests in watch mode:
+
+```bash
+yarn test:watch
+```
+
+You can also run the following command to start the http server that is used to execute the tests:
+
+```bash
+yarn test:server
+``` 
+
+#### Redis Server
+
+A local redis instance is needed when running the test suite. You can use the provided [redis.sh](https://github.com/etienne-martin/express-aggressive-cache/blob/master/redis.sh) script to run a redis container using docker (Make sure docker is installed and running).
 
 ## Authors
 
