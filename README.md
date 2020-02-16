@@ -68,7 +68,8 @@ const app = express();
 app.use(
   expressAggressiveCache({
     store: redisStore({
-      client: new Redis("//localhost:6379")
+      client: new Redis("//localhost:6379"),
+      prefix: "api-cache"
     })
   })
 );
