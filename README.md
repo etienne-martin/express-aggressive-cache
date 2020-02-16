@@ -47,12 +47,6 @@ app.get("/hello", (req, res) => {
     hello: "world"
   });
 });
-
-app.get("/ping", (req, res) => {
-  res.json({
-    ping: "pong"
-  });
-});
 ```
 
 **Example** - caches a specific endpoint:
