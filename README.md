@@ -107,6 +107,8 @@ cache({
 });
 ```
 
+---
+
 ### `redisStore(options)`
 
 It is recommended that redis be configured with a `allkeys-lru` eviction policy to prevent random keys from being deleted while serving responses.
