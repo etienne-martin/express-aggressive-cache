@@ -8,7 +8,7 @@ export const defaultGetCacheKey: DefaultGetCacheKey = ({ req }) => {
 
   const baseKey = normalizeUrl(url, {
     // Remove utm tacking parameter
-    removeQueryParameters: ["force", /^utm_\w+/i]
+    removeQueryParameters: [/^utm_\w+/i]
   });
 
   const normalizedUrl = baseKey.replace(origin, "").replace("/?", "");

@@ -1,4 +1,5 @@
-import { Router } from "express";
+import express, { Router } from "express";
+import path from "path";
 
 export const sharedRoutes = Router();
 
@@ -76,3 +77,9 @@ sharedRoutes.get("/invalid-cache-control", (req, res) => {
   res.setHeader("cache-control", "A*W&D?&*dty78=auwdtatd7*ADT?");
   res.send("hello world");
 });
+
+sharedRoutes.use(
+  express.static(path.join(__dirname, "static"), {
+    maxAge: 10000
+  })
+);
