@@ -133,9 +133,9 @@ cache({
 
 ## Redis Store
 
-It is recommended to configure redis with a `allkeys-lru` eviction policy to prevent random keys from being evicted while serving responses.
+It is recommended that redis be configured with a `allkeys-lru` eviction policy to prevent random keys from being deleted while serving responses.
 
-Note: performance will be impacted when caching large responses like files and images. We do not recommend caching anything above 5mb.
+Note: performance will be impacted when caching large responses like files and images. **We do not recommend caching anything above 5mb.**
 
 #### `client`
 
