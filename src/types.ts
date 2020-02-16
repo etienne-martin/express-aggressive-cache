@@ -22,21 +22,24 @@ export type GetCacheKey = GetCacheKeySync | GetCacheKeyAsync;
 
 export interface Options {
   /**
-   * A flag to toggle debug logs
-   * Defaults to false.
-   */
-  debug?: boolean;
-  /**
    * If the response has a max-age header, it will use it as the TTL.
    * Value should be provided in seconds.
    * Otherwise, it will expire the resource using the maxAge option (defaults to Infinity).
    */
   maxAge?: number;
+  /**
+   * Specify a different data store. Default to in-memory caching.
+   */
   store?: <T>() => Store<T>;
   /**
    * Function used to generate cache keys.
    */
   getCacheKey?: GetCacheKey;
+  /**
+   * A flag to toggle debug logs
+   * Defaults to false.
+   */
+  debug?: boolean;
 }
 
 export type Chunk = string | Buffer;

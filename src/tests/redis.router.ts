@@ -1,6 +1,6 @@
 import { Router } from "express";
 import Redis from "ioredis";
-import { expressAggressiveCache, redisStore } from "../index";
+import expressAggressiveCache, { redisStore } from "../index";
 import { sharedRoutes } from "./shared.routes";
 
 export const redisRouter = Router();
