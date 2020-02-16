@@ -85,31 +85,7 @@ If the response has a `max-age` header, it will use it as the TTL. Otherwise, it
 
 Specify a different data store. Default to in-memory caching.
 
-#### `getCacheKey`
-
-Function used to generate cache keys.
-
-It determines how the cache key should be computed, receiving `req`, `res` and `normalizedUrl` as input.
-
-Can be useful if you need to cache multiple variants of the same resource depending on the specifics of your application.
-
-**Example** - cache authenticated and non-authenticated requests separately:
-
-```javascript
-cache({
-  getCacheKey: ({ req, normalizedUrl }) => {
-    const isAuthenticated = !!req.session.user;
-
-    return `${isAuthenticated}:${normalizedUrl}`;
-  }
-});
-```
-
-#### `debug`
-
-A flag to toggle debug logs. Defaults to `false`.
-
-## `memoryStore(options)`
+### `memoryStore(options)`
 
 By default, the cache will be stored in memory (RAM). Since everything is stored in memory, the more cache, the higher the RAM usage. You can use the `max` option to mitigate this. It will delete the least-recently-used items as it reaches the limit.
 
@@ -131,7 +107,7 @@ cache({
 });
 ```
 
-## `redisStore(options)`
+### `redisStore(options)`
 
 It is recommended that redis be configured with a `allkeys-lru` eviction policy to prevent random keys from being deleted while serving responses.
 
@@ -163,6 +139,30 @@ cache({
   })
 });
 ```
+
+#### `getCacheKey`
+
+Function used to generate cache keys.
+
+It determines how the cache key should be computed, receiving `req`, `res` and `normalizedUrl` as input.
+
+Can be useful if you need to cache multiple variants of the same resource depending on the specifics of your application.
+
+**Example** - cache authenticated and non-authenticated requests separately:
+
+```javascript
+cache({
+  getCacheKey: ({ req, normalizedUrl }) => {
+    const isAuthenticated = !!req.session.user;
+
+    return `${isAuthenticated}:${normalizedUrl}`;
+  }
+});
+```
+
+#### `debug`
+
+A flag to toggle debug logs. Defaults to `false`.
 
 ## TypeScript
 
