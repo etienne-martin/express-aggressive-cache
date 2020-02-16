@@ -61,25 +61,7 @@ app.get("/hello", cache(), (req, res) => {
 });
 ```
 
-**Example** - limit the amount of entries in the cache:
-
-```javascript
-import express from "express";
-import cache, { memoryStore } from "express-aggressive-cache";
-
-const app = express();
-
-app.use(
-  cache({
-    store: memoryStore({
-      // Once reached, the least-recently-used items will be deleted from the cache.
-      max: 500
-    })
-  })
-);
-```
-
-**Example** - store cache in redis:
+**Example** - store the cache in redis:
 
 ```javascript
 import express from "express";
@@ -121,15 +103,13 @@ Can be useful if you need to cache multiple variants of the same resource depend
 **Example** - cache authenticated and non-authenticated requests separately:
 
 ```javascript
-app.use(
-  cache({
-    getCacheKey: ({ req, normalizedUrl }) => {
-      const isAuthenticated = !!req.session.user;
+cache({
+  getCacheKey: ({ req, normalizedUrl }) => {
+    const isAuthenticated = !!req.session.user;
 
-      return `${isAuthenticated}:${normalizedUrl}`;
-    }
-  })
-);
+    return `${isAuthenticated}:${normalizedUrl}`;
+  }
+});
 ```
 
 #### `debug`
@@ -147,6 +127,16 @@ Note: In-memory caching is not suitable for applications that scale horizontally
 #### `max`
 
 The maximum size of the cache, checked by applying the length function to all values in the cache. Defaults to `Infinity`.
+
+**Example** - limit the amount of entries in the cache:
+
+```javascript
+cache({
+  store: memoryStore({
+    max: 500
+  })
+});
+```
 
 ## Redis Store
 
@@ -167,6 +157,17 @@ Key prefix in Redis (default: "cache").
 This prefix appends to whatever prefix you may have set on the client itself.
 
 Note: You may need unique prefixes for different applications sharing the same Redis instance.
+
+**Example** - store the cache in redis:
+
+```javascript
+cache({
+  store: redisStore({
+    client: new Redis("//localhost:6379"),
+    prefix: "api-cache"
+  })
+});
+```
 
 ## TypeScript
 
