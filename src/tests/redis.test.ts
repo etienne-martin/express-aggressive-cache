@@ -7,4 +7,4 @@ beforeAll(async () => {
   await client.flushall();
 });
 
-sharedTests("redis");
+sharedTests("redis", 100);

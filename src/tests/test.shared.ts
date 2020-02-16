@@ -7,16 +7,15 @@ const request = supertest(app);
 // TODO: test gzipped responses
 // TODO: test normalized urls (query params)
 
-const DELAY = 100;
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-export const sharedTests = (store: string) => {
+export const sharedTests = (store: string, delayMs = 0) => {
   const buildUrl = (url: string) => `/${store}${url}`;
 
   test("should cache text responses", async () => {
     const url = buildUrl("/text");
     await request.get(url);
-    await delay(DELAY);
+    await delay(delayMs);
     const res = await request.get(url);
 
     expect(res.status).toBe(200);
@@ -27,7 +26,7 @@ export const sharedTests = (store: string) => {
   test("should cache json responses", async () => {
     const url = buildUrl("/json");
     await request.get(url);
-    await delay(DELAY);
+    await delay(delayMs);
     const res = await request.get(url);
 
     expect(res.status).toBe(200);
@@ -40,7 +39,7 @@ export const sharedTests = (store: string) => {
   test("should support buffers", async () => {
     const url = buildUrl("/buffer");
     await request.get(url);
-    await delay(DELAY);
+    await delay(delayMs);
     const res = await request.get(url);
 
     expect(res.status).toBe(200);
@@ -51,7 +50,7 @@ export const sharedTests = (store: string) => {
   test("should cache empty response", async () => {
     const url = buildUrl("/empty");
     await request.get(url);
-    await delay(DELAY);
+    await delay(delayMs);
     const res = await request.get(url);
 
     expect(res.status).toBe(200);
@@ -62,7 +61,7 @@ export const sharedTests = (store: string) => {
   test("should cache empty response", async () => {
     const url = buildUrl("/empty-2");
     await request.get(url);
-    await delay(DELAY);
+    await delay(delayMs);
     const res = await request.get(url);
 
     expect(res.status).toBe(200);
@@ -73,7 +72,7 @@ export const sharedTests = (store: string) => {
   test("should cache multiple chunks", async () => {
     const url = buildUrl("/multiple-chunks");
     await request.get(url);
-    await delay(DELAY);
+    await delay(delayMs);
     const res = await request.get(url);
 
     expect(res.status).toBe(200);
@@ -84,7 +83,7 @@ export const sharedTests = (store: string) => {
   test("should cache multiple chunks", async () => {
     const url = buildUrl("/multiple-chunks-2");
     await request.get(url);
-    await delay(DELAY);
+    await delay(delayMs);
     const res = await request.get(url);
 
     expect(res.status).toBe(200);
@@ -95,7 +94,7 @@ export const sharedTests = (store: string) => {
   test("should cache response headers", async () => {
     const url = buildUrl("/custom-header");
     await request.get(url);
-    await delay(DELAY);
+    await delay(delayMs);
     const res = await request.get(url);
 
     expect(res.status).toBe(200);
@@ -106,7 +105,7 @@ export const sharedTests = (store: string) => {
   test("should cache status codes", async () => {
     const url = buildUrl("/forbidden");
     await request.get(url);
-    await delay(DELAY);
+    await delay(delayMs);
     const res = await request.get(url);
 
     expect(res.status).toBe(403);
