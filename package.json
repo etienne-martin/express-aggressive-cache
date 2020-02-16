@@ -1,6 +1,6 @@
 {
   "name": "express-aggressive-cache",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "An aggressive yet obedient cache middleware for express",
   "homepage": "https://github.com/etienne-martin/express-aggressive-cache",
   "keywords": [
