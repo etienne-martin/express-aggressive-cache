@@ -80,6 +80,8 @@ You can specify for how long a response should be cached by specifying a `max-ag
 
 Responses containing `no-cache`, `no-store`, `private` or `max-age=0` won't be cached. **Anything else will be cached.**
 
+We recommend that you use a middleware such as [express-cache-controller](https://www.npmjs.com/package/express-cache-controller) to help you specify the cache control header.
+
 ## Options
 
 #### `maxAge`
