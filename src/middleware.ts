@@ -1,5 +1,5 @@
 import nanoid from "nanoid";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { CachedResponse, Chunk, Options } from "./types";
 import { returnCachedResponse } from "./response";
 import { memoryStore } from "./stores/memory.store";
