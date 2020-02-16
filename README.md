@@ -32,10 +32,12 @@ import cache from "express-aggressive-cache";
 
 const app = express();
 
-app.use(cache({
-  // Cache responses for 1 hour
-  maxAge: 3600
-}));
+app.use(
+  cache({
+    // Cache responses for 1 hour
+    maxAge: 3600
+  })
+);
 
 app.get("/hello", (req, res) => {
   res.json({
@@ -102,7 +104,7 @@ app.use(
 
 If the response has a max-age header, it will use it as the TTL.
 Value should be provided in seconds.
-Otherwise, it will expire the resource using the maxAge option (defaults to Infinity).
+Otherwise, it will expire the resource using the `maxAge` option (defaults to Infinity).
 
 #### `store`
 
@@ -111,6 +113,24 @@ Specify a different data store. Default to in-memory caching.
 #### `getCacheKey`
 
 Function used to generate cache keys.
+
+It determines how the cache key should be computed, receiving `req`, `res` and `normalizedUrl` as input.
+
+Can be useful if you need to cache multiple variants of the same resource depending on the specifics of your application.
+
+**Example** - cache authenticated and non-authenticated requests separately:
+
+```javascript
+app.use(
+  cache({
+    getCacheKey: ({ req, normalizedUrl }) => {
+      const isAuthenticated = !!req.session.user;
+
+      return `${isAuthenticated}:${normalizedUrl}`;
+    }
+  })
+);
+```
 
 #### `debug`
 
