@@ -70,13 +70,21 @@ app.get("/hello", cache(), (req, res) => {
 });
 ```
 
+## Cache Control
+
+This middleware uses the [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) header to determine whether or not a response should be cached.
+
+You can specify for how long a response should be cached by specifying a `max-age` with a value greater than zero.
+
+**Responses that do not specify a `max-age` will be cached by default.**
+
+Responses containing `no-cache`, `no-store`, `private` or `max-age=0` won't be cached. **Anything else will be cached.**
+
 ## Options
 
 #### `maxAge`
 
-If the response has a max-age header, it will use it as the TTL.
-Value should be provided in seconds.
-Otherwise, it will expire the resource using the `maxAge` option (defaults to Infinity).
+If the response has a `max-age` header, it will use it as the TTL. Otherwise, it will expire the resource using the `maxAge` option (defaults to Infinity). Value should be provided in seconds.
 
 #### `store`
 
