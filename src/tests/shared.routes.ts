@@ -29,14 +29,12 @@ sharedRoutes.get("/empty-2", (req, res) => {
 sharedRoutes.get("/multiple-chunks", (req, res) => {
   res.write("chunk1");
   res.write("chunk2");
-  res.write("chunk3");
   res.end();
 });
 
 sharedRoutes.get("/multiple-chunks-2", (req, res) => {
   res.write("chunk1");
-  res.write("chunk2");
-  res.end("chunk3");
+  res.end("chunk2");
 });
 
 sharedRoutes.get("/custom-header", (req, res) => {

@@ -73,7 +73,7 @@ export const sharedTests = (store: string, delayMs = 0) => {
 
     expect(res.status).toBe(200);
     expect(res.header["x-cache"]).toEqual("HIT");
-    expect(res.text).toEqual("chunk1chunk2chunk3");
+    expect(res.text).toEqual("chunk1chunk2");
   });
 
   test("should cache multiple chunks", async () => {
@@ -84,12 +84,13 @@ export const sharedTests = (store: string, delayMs = 0) => {
 
     expect(res.status).toBe(200);
     expect(res.header["x-cache"]).toEqual("HIT");
-    expect(res.text).toEqual("chunk1chunk2chunk3");
+    expect(res.text).toEqual("chunk1chunk2");
   });
 
-  test("should work with images", async () => {
+  test("should cache images", async () => {
     const url = buildUrl("/photo.jpeg");
     await request.get(url);
+    await delay(delayMs);
     await delay(delayMs);
     const res = await request.get(url);
 
@@ -220,8 +221,8 @@ export const sharedTests = (store: string, delayMs = 0) => {
     });
 
     test("should remove trailing question mark", async () => {
-      const url1 = buildUrl("/text?");
-      const url2 = buildUrl("/text");
+      const url1 = buildUrl("/text");
+      const url2 = buildUrl("/text?");
       await request.get(url1);
       await delay(delayMs);
       const res = await request.get(url2);
@@ -231,8 +232,8 @@ export const sharedTests = (store: string, delayMs = 0) => {
     });
 
     test("should remove trailing slash", async () => {
-      const url1 = buildUrl("/text/");
-      const url2 = buildUrl("/text");
+      const url1 = buildUrl("/text");
+      const url2 = buildUrl("/text/");
       await request.get(url1);
       await delay(delayMs);
       const res = await request.get(url2);
@@ -242,8 +243,8 @@ export const sharedTests = (store: string, delayMs = 0) => {
     });
 
     test("should remove trailing slash and question mark", async () => {
-      const url1 = buildUrl("/text/?");
-      const url2 = buildUrl("/text");
+      const url1 = buildUrl("/text");
+      const url2 = buildUrl("/text/?");
       await request.get(url1);
       await delay(delayMs);
       const res = await request.get(url2);
@@ -253,11 +254,24 @@ export const sharedTests = (store: string, delayMs = 0) => {
     });
 
     test("should remove utm tracking parameter", async () => {
-      const url1 = buildUrl("/text?utm_source=source");
-      const url2 = buildUrl("/text");
+      const url1 = buildUrl("/text");
+      const url2 = buildUrl("/text?utm_source=source");
       await request.get(url1);
       await delay(delayMs);
       const res = await request.get(url2);
+
+      expect(res.status).toBe(200);
+      expect(res.header["x-cache"]).toEqual("HIT");
+    });
+  });
+
+  describe("concurrency", () => {
+    test("should support concurrent requests", async () => {
+      const url = buildUrl("/photo.jpeg?parallel=1");
+      await Promise.all([request.get(url), request.get(url)]);
+      await delay(delayMs);
+      await delay(delayMs);
+      const res = await request.get(url);
 
       expect(res.status).toBe(200);
       expect(res.header["x-cache"]).toEqual("HIT");
