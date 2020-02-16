@@ -67,6 +67,7 @@ const app = express();
 app.use(
   cache({
     store: memoryStore({
+      // Once reached, the least-recently-used items will be deleted from the cache.
       max: 500
     })
   })
@@ -118,7 +119,7 @@ By default, the cache will be stored in memory (RAM). Since everything is stored
 
 This is not suitable for applications that scale horizontally as the cache will be duplicated across multiple nodes and can result in a high memory usage in your cluster.
 
-**We recommend using a redis data store if you have multiple instances of your application running behind a load balancer.** 
+**We recommend using a redis data store if you have multiple instances of your application running behind a load balancer.**
 
 #### `max`
 
