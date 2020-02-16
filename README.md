@@ -94,6 +94,30 @@ Function used to generate cache keys.
 
 A flag to toggle debug logs. Defaults to false.
 
+## Memory Store
+
+#### `max`
+
+The maximum size of the cache, checked by applying the length function to all values in the cache. Defaults to `Infinity`.
+
+## Redis Store
+
+#### `client`
+
+An instance of redis or a redis compatible client.
+
+Known compatible and tested clients:
+
+- [ioredis](https://www.npmjs.com/package/ioredis)
+
+#### `prefix`
+
+Key prefix in Redis (default: "cache").
+
+This prefix appends to whatever prefix you may have set on the client itself.  
+
+Note: You may need unique prefixes for different applications sharing the same Redis instance.
+
 ## TypeScript
 
 Type definitions are included in this library and exposed via:
