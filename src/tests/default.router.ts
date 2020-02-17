@@ -1,8 +1,8 @@
 import { Router } from "express";
-import expressAggressiveCache from "../index";
+import cache from "../";
 import { sharedRoutes } from "./shared.routes";
 
 export const defaultRouter = Router();
 
-defaultRouter.use(expressAggressiveCache());
+defaultRouter.use(cache());
 defaultRouter.use(sharedRoutes);

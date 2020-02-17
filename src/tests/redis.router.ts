@@ -1,12 +1,12 @@
 import { Router } from "express";
 import Redis from "ioredis";
-import expressAggressiveCache, { redisStore } from "../index";
+import cache, { redisStore } from "../";
 import { sharedRoutes } from "./shared.routes";
 
 export const redisRouter = Router();
 
 redisRouter.use(
-  expressAggressiveCache({
+  cache({
     store: redisStore({
       client: new Redis("//localhost:6379")
     })
