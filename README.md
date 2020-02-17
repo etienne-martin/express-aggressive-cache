@@ -213,6 +213,8 @@ You can also run the following command to start the http server that is used to 
 yarn test:server
 ``` 
 
+Will be accessible via http://localhost:3000
+
 #### Local Redis Server
 
 A local redis instance is needed when running the test suite. You can use the provided [redis.sh](https://github.com/etienne-martin/express-aggressive-cache/blob/master/redis.sh) script to run a redis container using docker (Make sure docker is installed and running).

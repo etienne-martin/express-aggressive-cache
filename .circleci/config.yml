@@ -95,6 +95,7 @@ workflows:
       - test:
           requires:
             - deps
+            - build
 
       - publish:
           requires:
