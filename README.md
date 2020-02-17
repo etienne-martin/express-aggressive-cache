@@ -207,7 +207,7 @@ Run tests in watch mode:
 yarn test:watch
 ```
 
-You can also run the following command to start the http server that is used to execute the tests:
+You can also run the following command to start the http server that is used when executing the tests:
 
 ```bash
 yarn test:server
