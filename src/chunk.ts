@@ -4,10 +4,10 @@ import { parseCacheControl, sha256, Queue } from "./utils";
 import { shouldCache } from "./should-cache";
 
 /**
- * Do not store non sealed responses indefinitely
+ * Do not store incomplete responses indefinitely
  * clear them after 10s in case something fails
  */
-const NON_SEALED_RESPONSE_TTL = 10;
+const INCOMPLETE_RESPONSE_TTL = 10;
 
 /**
  * Keep chunks in memory longer than the response itself
@@ -104,7 +104,7 @@ export const cacheChunk = async ({
             isSealed: false,
             maxAge
           },
-          NON_SEALED_RESPONSE_TTL
+          INCOMPLETE_RESPONSE_TTL
         ),
         chunkBucket.set(chunkId, chunk, chunkMaxAge)
       ]);
@@ -116,6 +116,7 @@ export const cacheChunk = async ({
       log("CACHED CHUNK (NEW CACHE ENTRY):", cacheKey);
     } catch (err) {
       log(err);
+      await chunkQueue.destroy();
     }
 
     return;
@@ -132,6 +133,7 @@ export const cacheChunk = async ({
       log("CACHED CHUNK:", cacheKey);
     } catch (err) {
       log(err);
+      await chunkQueue.destroy();
     }
 
     return;
