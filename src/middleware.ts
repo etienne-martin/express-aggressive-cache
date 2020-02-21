@@ -1,11 +1,12 @@
 import nanoid from "nanoid";
-import { Request, Response, NextFunction } from "express";
-import { CachedResponse, Chunk, Options } from "./types";
+import { Request, NextFunction } from "express";
+import { CachedResponse, Chunk, ExtendedResponse, Options } from "./types";
 import { returnCachedResponse } from "./response";
 import { memoryStore } from "./stores/memory.store";
 import { cacheChunk, sealChunks } from "./chunk";
 import { Queue } from "./utils";
 import { defaultGetCacheKey } from "./cache-key";
+import { normalizeSetCookieHeaders } from "./utils/cookie";
 
 const defaultOptions = {
   maxAge: undefined,
@@ -29,7 +30,7 @@ export const expressAggressiveCache = (options?: Options) => {
   const responseBucket = store<CachedResponse>();
   const chunkBucket = store<Chunk>();
 
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: ExtendedResponse, next: NextFunction) => {
     /**
      * Should only cache GET requests
      */
@@ -45,6 +46,12 @@ export const expressAggressiveCache = (options?: Options) => {
     const normalizedUrl = defaultGetCacheKey({ req, res });
     const cacheKey = await getCacheKey({ req, res, normalizedUrl });
     const cachedResponse = await responseBucket.get(cacheKey);
+    const setCookieHeaders = res.getHeader("set-cookie");
+
+    res.aggressiveCache = {
+      chunks: [],
+      upstreamCookies: normalizeSetCookieHeaders(setCookieHeaders)
+    };
 
     // ----------- CACHE HIT ----------- //
 

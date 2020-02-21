@@ -58,3 +58,10 @@ export interface Store<T> {
   get: (key: string) => Promise<T | undefined>;
   set: (key: string, value: T, maxAge: number | undefined) => Promise<void>;
 }
+
+export interface ExtendedResponse extends Response {
+  aggressiveCache?: {
+    chunks?: string[];
+    upstreamCookies?: string[];
+  };
+}

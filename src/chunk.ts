@@ -1,7 +1,10 @@
-import { CachedResponse, Chunk, Store } from "./types";
-import express from "express";
+import { CachedResponse, Chunk, ExtendedResponse, Store } from "./types";
 import { parseCacheControl, sha256, Queue } from "./utils";
 import { shouldCache } from "./should-cache";
+import {
+  normalizeSetCookieHeaders,
+  removeUpstreamCookies
+} from "./utils/cookie";
 
 /**
  * Do not store incomplete responses indefinitely
@@ -13,12 +16,6 @@ const INCOMPLETE_RESPONSE_TTL = 10;
  * Keep chunks in memory longer than the response itself
  */
 const CHUNK_MAX_AGE_EXTENSION = 10;
-
-interface Response extends express.Response {
-  aggressiveCache?: {
-    chunks?: string[];
-  };
-}
 
 /**
  * Chunk IDs contains the cache key so that we can have two identical chunks with different expiration
@@ -36,27 +33,44 @@ export const sealChunks = async ({
 }: {
   requestId: string;
   cacheKey: string;
-  res: Response;
+  res: ExtendedResponse;
   log: typeof console.log;
   responseBucket: Store<CachedResponse>;
 }) => {
-  if (!res.aggressiveCache?.chunks?.length) return;
+  const chunks = res.aggressiveCache?.chunks;
+  const upstreamSetCookieHeaders = res.aggressiveCache?.upstreamCookies;
+
+  if (!chunks?.length) return;
 
   const cachedResponse = await responseBucket.get(cacheKey);
 
-  if (cachedResponse?.requestId === requestId) {
-    await responseBucket.set(
-      cacheKey,
-      {
-        ...cachedResponse,
-        chunks: res.aggressiveCache.chunks,
-        isSealed: true
-      },
-      cachedResponse.maxAge
-    );
+  if (cachedResponse?.requestId !== requestId) return;
 
-    log("SEALED CACHE:", cacheKey);
+  /**
+   * We remove upstream cookies from cached responses
+   */
+  const setCookieHeaders = removeUpstreamCookies(
+    upstreamSetCookieHeaders,
+    normalizeSetCookieHeaders(cachedResponse.headers["set-cookie"])
+  );
+
+  if (setCookieHeaders) {
+    cachedResponse.headers["set-cookie"] = setCookieHeaders;
+  } else {
+    delete cachedResponse.headers["set-cookie"];
   }
+
+  await responseBucket.set(
+    cacheKey,
+    {
+      ...cachedResponse,
+      chunks,
+      isSealed: true
+    },
+    cachedResponse.maxAge
+  );
+
+  log("SEALED CACHE:", cacheKey);
 };
 
 export const cacheChunk = async ({
@@ -72,7 +86,7 @@ export const cacheChunk = async ({
 }: {
   requestId: string;
   chunk: Chunk;
-  res: Response;
+  res: ExtendedResponse;
   cacheKey: string;
   defaultMaxAge: number | undefined;
   log: typeof console.log;
@@ -109,9 +123,7 @@ export const cacheChunk = async ({
         chunkBucket.set(chunkId, chunk, chunkMaxAge)
       ]);
 
-      res.aggressiveCache = {
-        chunks: [chunkId]
-      };
+      res.aggressiveCache?.chunks?.push(chunkId);
 
       log("CACHED CHUNK (NEW CACHE ENTRY):", cacheKey);
     } catch (err) {

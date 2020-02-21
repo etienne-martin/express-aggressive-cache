@@ -1,5 +1,6 @@
 import express, { Router } from "express";
 import path from "path";
+import nanoid from "nanoid";
 
 export const sharedRoutes = Router();
 
@@ -81,3 +82,17 @@ sharedRoutes.use(
     maxAge: 10000
   })
 );
+
+sharedRoutes.get("/set-cookie", (req, res) => {
+  res.cookie("my-cookie", nanoid());
+  res.send("hello world");
+});
+
+sharedRoutes.get("/upstream-cookie-and-set-cookie", (req, res) => {
+  res.cookie("my-cookie", nanoid());
+  res.send("hello world");
+});
+
+sharedRoutes.get("*", (req, res) => {
+  res.send("hello world");
+});
