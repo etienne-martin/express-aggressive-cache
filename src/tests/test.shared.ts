@@ -43,7 +43,7 @@ export const sharedTests = (store: string, delayMs = 0) => {
     expect(res.text).toEqual("hello world");
   });
 
-  test("should cache empty response", async () => {
+  test("should cache empty responses", async () => {
     const url = buildUrl("/empty");
     await request.get(url);
     await delay(delayMs);
@@ -54,7 +54,7 @@ export const sharedTests = (store: string, delayMs = 0) => {
     expect(res.text).toEqual("");
   });
 
-  test("should cache empty response", async () => {
+  test("should cache empty responses", async () => {
     const url = buildUrl("/empty-2");
     await request.get(url);
     await delay(delayMs);
@@ -101,7 +101,7 @@ export const sharedTests = (store: string, delayMs = 0) => {
     );
   });
 
-  test("should cache response headers", async () => {
+  test("should cache responses headers", async () => {
     const url = buildUrl("/custom-header");
     await request.get(url);
     await delay(delayMs);
@@ -122,17 +122,8 @@ export const sharedTests = (store: string, delayMs = 0) => {
     expect(res.header["x-cache"]).toEqual("HIT");
   });
 
-  describe("should not cache", () => {
-    test("should not cache response with no-cache", async () => {
-      const url = buildUrl("/no-cache");
-      await request.get(url);
-      const res = await request.get(url);
-
-      expect(res.status).toBe(200);
-      expect(res.header["x-cache"]).toEqual("MISS");
-    });
-
-    test("should not cache response with no-store", async () => {
+  describe("should honor the cache control header", () => {
+    test("should not cache responses with no-store directive", async () => {
       const url = buildUrl("/no-store");
       await request.get(url);
       const res = await request.get(url);
@@ -141,7 +132,7 @@ export const sharedTests = (store: string, delayMs = 0) => {
       expect(res.header["x-cache"]).toEqual("MISS");
     });
 
-    test("should not cache private response", async () => {
+    test("should not cache responses with private directive", async () => {
       const url = buildUrl("/private");
       await request.get(url);
       const res = await request.get(url);
@@ -150,7 +141,7 @@ export const sharedTests = (store: string, delayMs = 0) => {
       expect(res.header["x-cache"]).toEqual("MISS");
     });
 
-    test("should not cache response with max-age=0", async () => {
+    test("should not cache responses with s-maxage=0", async () => {
       const url = buildUrl("/max-age-0");
       await request.get(url);
       const res = await request.get(url);
@@ -159,7 +150,26 @@ export const sharedTests = (store: string, delayMs = 0) => {
       expect(res.header["x-cache"]).toEqual("MISS");
     });
 
-    test("should not cache response with max-age=NaN", async () => {
+    test("should not cache responses with max-age=0", async () => {
+      const url = buildUrl("/max-age-0");
+      await request.get(url);
+      const res = await request.get(url);
+
+      expect(res.status).toBe(200);
+      expect(res.header["x-cache"]).toEqual("MISS");
+    });
+
+    test("should ignore the max-age directive if s-maxage is present", async () => {
+      const url = buildUrl("/multiple-maxage");
+      await request.get(url);
+      await delay(delayMs);
+      const res = await request.get(url);
+
+      expect(res.status).toBe(200);
+      expect(res.header["x-cache"]).toEqual("HIT");
+    });
+
+    test("should not cache responses with max-age=NaN", async () => {
       const url = buildUrl("/max-age-nan");
       await request.get(url);
       const res = await request.get(url);
@@ -168,7 +178,7 @@ export const sharedTests = (store: string, delayMs = 0) => {
       expect(res.header["x-cache"]).toEqual("MISS");
     });
 
-    test("should not cache response with invalid cache-control header", async () => {
+    test("should not cache responses with invalid cache-control header", async () => {
       const url = buildUrl("/invalid-cache-control");
       await request.get(url);
       const res = await request.get(url);

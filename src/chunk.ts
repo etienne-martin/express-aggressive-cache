@@ -5,6 +5,7 @@ import {
   normalizeSetCookieHeaders,
   removeUpstreamCookies
 } from "./utils/cookie";
+import { getMaxAge } from "./utils/cache-control";
 
 /**
  * Do not store incomplete responses indefinitely
@@ -99,7 +100,7 @@ export const cacheChunk = async ({
 
   if (!shouldCache(cacheControl)) return;
 
-  const maxAge: number | undefined = cacheControl?.["max-age"] || defaultMaxAge;
+  const maxAge = getMaxAge(cacheControl, defaultMaxAge);
   const chunkMaxAge = maxAge ? maxAge + CHUNK_MAX_AGE_EXTENSION : undefined;
   const cachedResponse = await responseBucket.get(cacheKey);
 
