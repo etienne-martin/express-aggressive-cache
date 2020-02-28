@@ -67,6 +67,16 @@ sharedRoutes.get("/max-age-0", (req, res) => {
   res.send("hello world");
 });
 
+sharedRoutes.get("/s-maxage-0", (req, res) => {
+  res.setHeader("cache-control", "s-maxage=0");
+  res.send("hello world");
+});
+
+sharedRoutes.get("/multiple-maxage", (req, res) => {
+  res.setHeader("cache-control", "max-age=0, s-maxage=100");
+  res.send("hello world");
+});
+
 sharedRoutes.get("/max-age-nan", (req, res) => {
   res.setHeader("cache-control", "max-age=NaN");
   res.send("hello world");

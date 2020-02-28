@@ -1,4 +1,6 @@
-export const parseCacheControl = (cacheControlHeader: string) => {
+export const parseCacheControl = (
+  cacheControlHeader: string
+): Record<string, string | number> | null => {
   const regex = /(?:^|(?:\s*\,\s*))([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)(?:\=(?:([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)|(?:\"((?:[^"\\]|\\.)*)\")))?/g;
   const header: Record<string, any> = {};
 
@@ -20,5 +22,24 @@ export const parseCacheControl = (cacheControlHeader: string) => {
     } catch {}
   }
 
+  if (header["s-maxage"]) {
+    try {
+      const sMaxAge = parseInt(header["s-maxage"], 10);
+
+      if (isNaN(sMaxAge)) return null;
+
+      header["s-maxage"] = sMaxAge;
+    } catch {}
+  }
+
   return error ? null : header;
+};
+
+export const getMaxAge = (
+  cacheControl: Record<string, any> | null,
+  defaultMaxAge: number | undefined
+): number | undefined => {
+  return (
+    cacheControl?.["s-maxage"] || cacheControl?.["max-age"] || defaultMaxAge
+  );
 };

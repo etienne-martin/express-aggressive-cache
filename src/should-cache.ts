@@ -4,15 +4,19 @@
 export const shouldCache = (cacheControl: Record<string, any> | null) => {
   if (cacheControl === null) return false;
 
-  const noCache = cacheControl["no-cache"];
   const noStore = cacheControl["no-store"];
   const isPrivate = cacheControl["private"];
   const maxAge = cacheControl["max-age"];
+  const sharedMaxAge = cacheControl["s-maxage"];
 
-  if (noCache) return false;
   if (noStore) return false;
   if (isPrivate) return false;
-  if (maxAge === 0) return false;
+
+  if (sharedMaxAge !== undefined) {
+    if (sharedMaxAge === 0) return false;
+  } else if (maxAge === 0) {
+    return false;
+  }
 
   return true;
 };
