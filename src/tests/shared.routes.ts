@@ -103,6 +103,16 @@ sharedRoutes.get("/upstream-cookie-and-set-cookie", (req, res) => {
   res.send("hello world");
 });
 
+sharedRoutes.get("/exp/s-maxage", (req, res) => {
+  res.setHeader("cache-control", `s-maxage=2`);
+  res.send("hello world");
+});
+
+sharedRoutes.get("/exp/max-age", (req, res) => {
+  res.setHeader("cache-control", `max-age=2`);
+  res.send("hello world");
+});
+
 sharedRoutes.get("*", (req, res) => {
   res.send("hello world");
 });
