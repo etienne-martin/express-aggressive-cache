@@ -3,7 +3,9 @@ import normalizeUrl from "normalize-url";
 import { DefaultGetCacheKey } from "./types";
 
 export const defaultGetCacheKey: DefaultGetCacheKey = ({ req }) => {
-  const url = new URL(req.originalUrl, "http://localhost").toString();
+  // Escape directory traversal notation
+  const originalUrl = req.originalUrl.replace(/\.\./g, "_DOTDOT_");
+  const url = new URL(originalUrl, "http://localhost").toString();
   const { origin } = new URL(url);
 
   const baseKey = normalizeUrl(url, {
@@ -11,7 +13,11 @@ export const defaultGetCacheKey: DefaultGetCacheKey = ({ req }) => {
     removeQueryParameters: [/^utm_\w+/i]
   });
 
-  const normalizedUrl = baseKey.replace(origin, "").replace("/?", "");
+  const normalizedUrl = baseKey
+    .replace(origin, "")
+    .replace("/?", "")
+    // Unescape directory traversal notation
+    .replace(/_DOTDOT_/g, "..");
 
   return `${req.method}:${normalizedUrl}`;
 };
