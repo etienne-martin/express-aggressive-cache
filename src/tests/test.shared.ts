@@ -229,17 +229,6 @@ export const sharedTests = (store: string, delayMs = 0) => {
       expect(res.header["x-cache"]).toEqual("HIT");
     });
 
-    test("should not rewrite urls with directory traversal notation", async () => {
-      const url1 = buildUrl("/test/test/../");
-      const url2 = buildUrl("/test/");
-      await request.get(url1);
-      await delay(delayMs);
-      const res = await request.get(url2);
-
-      expect(res.status).toBe(200);
-      expect(res.header["x-cache"]).toEqual("MISS");
-    });
-
     test("should remove trailing question mark", async () => {
       const url1 = buildUrl("/text");
       const url2 = buildUrl("/text?");
