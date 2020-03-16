@@ -230,8 +230,8 @@ export const sharedTests = (store: string, delayMs = 0) => {
     });
 
     test("should not rewrite urls with directory traversal notation", async () => {
-      const url1 = buildUrl("/test/../");
-      const url2 = buildUrl("/");
+      const url1 = buildUrl("/test/test/../");
+      const url2 = buildUrl("/test/");
       await request.get(url1);
       await delay(delayMs);
       const res = await request.get(url2);
