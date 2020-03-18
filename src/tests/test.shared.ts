@@ -234,31 +234,27 @@ export const sharedTests = (store: string, delayMs = 0) => {
     test("should expire cache after 2s", async () => {
       const url = buildUrl(`/exp/s-maxage`);
       const res1 = await request.get(url);
-      await delay(1000);
+      await delay(delayMs);
       const res2 = await request.get(url);
-      await delay(3000);
+      await delay(2000);
       const res3 = await request.get(url);
 
       expect(res1.header["x-cache"]).toEqual("MISS");
       expect(res2.header["x-cache"]).toEqual("HIT");
       expect(res3.header["x-cache"]).toEqual("MISS");
-      expect(res1.status).toBe(200);
-      expect(res2.status).toBe(200);
     });
 
     test("should expire cache after 2s", async () => {
       const url = buildUrl(`/exp/max-age`);
       const res1 = await request.get(url);
-      await delay(1500);
+      await delay(delayMs);
       const res2 = await request.get(url);
-      await delay(3000);
+      await delay(2000);
       const res3 = await request.get(url);
 
       expect(res1.header["x-cache"]).toEqual("MISS");
       expect(res2.header["x-cache"]).toEqual("HIT");
       expect(res3.header["x-cache"]).toEqual("MISS");
-      expect(res1.status).toBe(200);
-      expect(res2.status).toBe(200);
     });
   });
 
@@ -280,7 +276,7 @@ export const sharedTests = (store: string, delayMs = 0) => {
       expect(res2.status).toBe(200);
     });
 
-    test("shouldn't cache cookies that were set by previous middlewares", async () => {
+    test("shouldn't cache cookies that were set by previous middlewares (multiple cookies)", async () => {
       const url = buildUrl(`/upstream-cookie-multiple`);
       const res1 = await request.get(url);
       await delay(delayMs);
