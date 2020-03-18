@@ -1,14 +1,12 @@
 import supertest from "supertest";
 import { app } from "./server";
 import { sha256 } from "../utils";
-import Redis from "ioredis";
 
 const request = supertest(app);
 
 export const sharedTests = (store: string, delayMs = 0) => {
   const buildUrl = (url: string) => `/${store}${url}`;
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-  const client = new Redis("//localhost:6379");
 
   test("should cache text responses", async () => {
     const url = buildUrl("/text");
@@ -243,10 +241,6 @@ export const sharedTests = (store: string, delayMs = 0) => {
     });
 
     test("should remove trailing question mark", async () => {
-      const test = await client.keys("*");
-
-      console.log("url normalization", test);
-
       const url1 = buildUrl("/text");
       const url2 = buildUrl("/text?");
       await request.get(url1);
@@ -321,10 +315,6 @@ export const sharedTests = (store: string, delayMs = 0) => {
     });
 
     test("should expire cache after 2s", async () => {
-      const test = await client.keys("*");
-
-      console.log("expiration", test);
-
       const url = buildUrl(`/exp/max-age`);
       const res1 = await request.get(url);
       await delay(delayMs);
