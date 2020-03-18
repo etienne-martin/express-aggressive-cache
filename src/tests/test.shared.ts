@@ -249,7 +249,7 @@ export const sharedTests = (store: string, delayMs = 0) => {
     test("should expire cache after 2s", async () => {
       const url = buildUrl(`/exp/max-age`);
       const res1 = await request.get(url);
-      await delay(1000);
+      await delay(1500);
       const res2 = await request.get(url);
       await delay(3000);
       const res3 = await request.get(url);
