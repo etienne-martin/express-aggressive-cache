@@ -1,6 +1,7 @@
 import supertest from "supertest";
 import { app } from "./server";
 import { sha256 } from "../utils";
+import Redis from "ioredis";
 
 const request = supertest(app);
 
@@ -230,6 +231,11 @@ export const sharedTests = (store: string, delayMs = 0) => {
     });
 
     test("should not rewrite urls with directory traversal notation", async () => {
+      const client = new Redis("//localhost:6379");
+      const test = await client.keys(".");
+
+      console.log(test);
+
       const url1 = buildUrl("/test/test/../");
       const url2 = buildUrl("/test/");
       await request.get(url1);
