@@ -107,20 +107,28 @@ export const redisStore = (options: RedisStoreOptions) => {
      * 3. JSON objects are stringified prior to being converted to a Buffer
      */
     const set = async (key: string, value: T, maxAge: number | undefined) => {
-      const lock = await redlock.lock(
-        prefixKey(`locks:${key}`, prefix),
-        REDLOCK_TTL
-      );
-      const prefixedKey = prefixKey(key, prefix);
-      const buffer = serializeValue<T>(prefixedKey, value);
+      try {
+        const lock = await redlock.lock(
+          prefixKey(`locks:${key}`, prefix),
+          REDLOCK_TTL
+        );
+        const prefixedKey = prefixKey(key, prefix);
+        const buffer = serializeValue<T>(prefixedKey, value);
 
-      if (maxAge) {
-        await client.set(prefixedKey, buffer, "EX", maxAge);
-      } else {
-        await client.set(prefixedKey, buffer);
+        if (maxAge) {
+          await client.set(prefixedKey, buffer, "EX", maxAge);
+        } else {
+          await client.set(prefixedKey, buffer);
+        }
+
+        await lock.unlock();
+      } catch (err) {
+        // Lock errors are expected when two concurrent requests attempt to create a cache entry
+        // We just ignore them
+        if (err.name === "LockError") return;
+
+        throw err;
       }
-
-      await lock.unlock();
     };
 
     const store: Store<T> = {
