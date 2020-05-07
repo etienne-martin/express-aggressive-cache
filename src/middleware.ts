@@ -6,7 +6,6 @@ import { memoryStore } from "./stores/memory.store";
 import { cacheChunk, sealChunks } from "./chunk";
 import { Queue } from "./utils";
 import { defaultGetCacheKey } from "./cache-key";
-import { normalizeSetCookieHeaders } from "./utils/cookie";
 
 const defaultOptions = {
   maxAge: undefined,
@@ -46,11 +45,9 @@ export const expressAggressiveCache = (options?: Options) => {
     const normalizedUrl = defaultGetCacheKey({ req, res });
     const cacheKey = await getCacheKey({ req, res, normalizedUrl });
     const cachedResponse = await responseBucket.get(cacheKey);
-    const setCookieHeaders = res.getHeader("set-cookie");
 
     res.aggressiveCache = {
-      chunks: [],
-      upstreamCookies: normalizeSetCookieHeaders(setCookieHeaders)
+      chunks: []
     };
 
     // ----------- CACHE HIT ----------- //

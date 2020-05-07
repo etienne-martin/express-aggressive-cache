@@ -62,6 +62,5 @@ export interface Store<T> {
 export interface ExtendedResponse extends Response {
   aggressiveCache?: {
     chunks?: string[];
-    upstreamCookies?: string[];
   };
 }

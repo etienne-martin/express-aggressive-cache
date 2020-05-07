@@ -98,11 +98,6 @@ sharedRoutes.get("/set-cookie", (req, res) => {
   res.send("hello world");
 });
 
-sharedRoutes.get("/upstream-cookie-and-set-cookie", (req, res) => {
-  res.cookie("my-cookie", nanoid());
-  res.send("hello world");
-});
-
 sharedRoutes.get("/exp/s-maxage", (req, res) => {
   res.setHeader("cache-control", `s-maxage=1`);
   res.send("hello world");

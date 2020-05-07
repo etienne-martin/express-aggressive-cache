@@ -259,71 +259,16 @@ export const sharedTests = (store: string, delayMs = 0) => {
   });
 
   describe("cookie", () => {
-    test("shouldn't cache cookies that were set by previous middlewares", async () => {
-      const url = buildUrl(`/upstream-cookie`);
-      const res1 = await request.get(url);
-      await delay(delayMs);
-      const res2 = await request.get(url);
-      const res1Cookie = res1.header["set-cookie"];
-      const res2Cookie = res2.header["set-cookie"];
-
-      expect(res1.header["x-cache"]).toEqual("MISS");
-      expect(res2.header["x-cache"]).toEqual("HIT");
-      expect(res1Cookie).toBeDefined();
-      expect(res2Cookie).toBeDefined();
-      expect(res1Cookie).not.toEqual(res2Cookie);
-      expect(res1.status).toBe(200);
-      expect(res2.status).toBe(200);
-    });
-
-    test("shouldn't cache cookies that were set by previous middlewares (multiple cookies)", async () => {
-      const url = buildUrl(`/upstream-cookie-multiple`);
-      const res1 = await request.get(url);
-      await delay(delayMs);
-      const res2 = await request.get(url);
-      const res1Cookie = res1.header["set-cookie"];
-      const res2Cookie = res2.header["set-cookie"];
-
-      expect(res1.header["x-cache"]).toEqual("MISS");
-      expect(res2.header["x-cache"]).toEqual("HIT");
-      expect(res1Cookie).toBeDefined();
-      expect(res2Cookie).toBeDefined();
-      expect(res1Cookie).not.toEqual(res2Cookie);
-      expect(res1.status).toBe(200);
-      expect(res2.status).toBe(200);
-    });
-
-    test("should cache cookies that were set after hitting the cache middleware", async () => {
+    test("should NEVER return cookies on cache hit", async () => {
       const url = buildUrl(`/set-cookie`);
       const res1 = await request.get(url);
       await delay(delayMs);
       const res2 = await request.get(url);
-      const res1Cookie = res1.header["set-cookie"];
-      const res2Cookie = res2.header["set-cookie"];
 
       expect(res1.header["x-cache"]).toEqual("MISS");
       expect(res2.header["x-cache"]).toEqual("HIT");
-      expect(res1Cookie).toBeDefined();
-      expect(res1Cookie).toEqual(res2Cookie);
-      expect(res1.status).toBe(200);
-      expect(res2.status).toBe(200);
-    });
-
-    test("should cache cookies that were set after hitting the cache middleware", async () => {
-      const url = buildUrl(`/upstream-cookie-and-set-cookie`);
-      const res1 = await request.get(url);
-      await delay(delayMs);
-      const res2 = await request.get(url);
-      const res1Cookie = res1.header["set-cookie"];
-      const res2Cookie = res2.header["set-cookie"];
-
-      expect(res1.header["x-cache"]).toEqual("MISS");
-      expect(res2.header["x-cache"]).toEqual("HIT");
-      expect(res1Cookie.length).toEqual(2);
-      expect(res2Cookie.length).toEqual(2);
-      expect(res1Cookie).not.toEqual(res2Cookie);
-      expect(res1.status).toBe(200);
-      expect(res2.status).toBe(200);
+      expect(res1.header["set-cookie"]).toBeDefined();
+      expect(res2.header["set-cookie"]).toBeUndefined();
     });
   });
 };

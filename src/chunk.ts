@@ -1,10 +1,6 @@
 import { CachedResponse, Chunk, ExtendedResponse, Store } from "./types";
 import { parseCacheControl, sha256, Queue } from "./utils";
 import { shouldCache } from "./should-cache";
-import {
-  normalizeSetCookieHeaders,
-  removeUpstreamCookies
-} from "./utils/cookie";
 import { getMaxAge } from "./utils/cache-control";
 
 /**
@@ -39,7 +35,6 @@ export const sealChunks = async ({
   responseBucket: Store<CachedResponse>;
 }) => {
   const chunks = res.aggressiveCache?.chunks;
-  const upstreamSetCookieHeaders = res.aggressiveCache?.upstreamCookies;
 
   if (!chunks?.length) return;
 
@@ -47,25 +42,18 @@ export const sealChunks = async ({
 
   if (cachedResponse?.requestId !== requestId) return;
 
-  /**
-   * We remove upstream cookies from cached responses
-   */
-  const setCookieHeaders = removeUpstreamCookies(
-    upstreamSetCookieHeaders,
-    normalizeSetCookieHeaders(cachedResponse.headers["set-cookie"])
-  );
+  const headers = { ...res.getHeaders() };
+  const statusCode = res.statusCode;
 
-  if (setCookieHeaders) {
-    cachedResponse.headers["set-cookie"] = setCookieHeaders;
-  } else {
-    delete cachedResponse.headers["set-cookie"];
-  }
+  delete headers["set-cookie"];
 
   await responseBucket.set(
     cacheKey,
     {
       ...cachedResponse,
       chunks,
+      statusCode,
+      headers,
       isSealed: true
     },
     cachedResponse.maxAge
@@ -114,8 +102,8 @@ export const cacheChunk = async ({
           {
             requestId,
             chunks: [],
-            statusCode: res.statusCode,
-            headers: { ...res.getHeaders() },
+            statusCode: 200,
+            headers: {},
             isSealed: false,
             maxAge
           },
