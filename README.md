@@ -11,8 +11,8 @@ An aggressive yet obedient cache middleware for express.
 ## Features
 
 - Plug and Play
+- Built-in TypeScript support
 - Multiple data stores (in-memory and redis)
-- High throughput
 - Thoroughly tested
 
 ## Getting Started
