@@ -1,13 +1,10 @@
 // Cache-Control for Civilians
 // https://csswizardry.com/2019/03/cache-control-for-civilians/
 
-export const shouldCache = (cacheControl: Record<string, any> | null) => {
-  if (cacheControl === null) return false;
+import { CacheControl } from "cache-control-parser";
 
-  const noStore = cacheControl["no-store"];
-  const isPrivate = cacheControl["private"];
-  const maxAge = cacheControl["max-age"];
-  const sharedMaxAge = cacheControl["s-maxage"];
+export const shouldCache = (cacheControl: CacheControl) => {
+  const { noStore, isPrivate, maxAge, sharedMaxAge } = cacheControl;
 
   if (noStore) return false;
   if (isPrivate) return false;

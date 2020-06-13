@@ -168,24 +168,6 @@ export const sharedTests = (store: string, delayMs = 0) => {
       expect(res.status).toBe(200);
       expect(res.header["x-cache"]).toEqual("HIT");
     });
-
-    test("should not cache responses with max-age=NaN", async () => {
-      const url = buildUrl("/max-age-nan");
-      await request.get(url);
-      const res = await request.get(url);
-
-      expect(res.status).toBe(200);
-      expect(res.header["x-cache"]).toEqual("MISS");
-    });
-
-    test("should not cache responses with invalid cache-control header", async () => {
-      const url = buildUrl("/invalid-cache-control");
-      await request.get(url);
-      const res = await request.get(url);
-
-      expect(res.status).toBe(200);
-      expect(res.header["x-cache"]).toEqual("MISS");
-    });
   });
 
   describe("http method", () => {

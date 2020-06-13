@@ -1,5 +1,6 @@
+import cacheControlParser from "cache-control-parser";
 import { CachedResponse, Chunk, ExtendedResponse, Store } from "./types";
-import { parseCacheControl, sha256, Queue } from "./utils";
+import { sha256, Queue } from "./utils";
 import { shouldCache } from "./should-cache";
 import { getMaxAge } from "./utils/cache-control";
 
@@ -84,7 +85,7 @@ export const cacheChunk = async ({
   chunkQueue: Queue;
 }) => {
   const cacheControlHeader = `${res.getHeader("Cache-Control") || ""}`;
-  const cacheControl = parseCacheControl(cacheControlHeader);
+  const cacheControl = cacheControlParser(cacheControlHeader);
 
   if (!shouldCache(cacheControl)) return;
 
