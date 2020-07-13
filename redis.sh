@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Run docker-compose only if redis is not already running
 if [[ $(docker ps -a|grep express-aggressive-cache-redis) ]];
 then if [[ $(docker inspect -f {{.State.Running}} express-aggressive-cache-redis) == "false" ]];

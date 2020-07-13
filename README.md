@@ -232,7 +232,7 @@ Will be accessible via http://localhost:3000
 A local redis instance is needed when running the test suite. You can use the provided [redis.sh](https://github.com/etienne-martin/express-aggressive-cache/blob/master/redis.sh) script to run a redis container using docker (Make sure docker is installed and running).
 
 ```bash
-sh redis.sh
+./redis.sh
 ```
 
 ## Authors
