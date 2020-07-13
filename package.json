@@ -1,6 +1,6 @@
 {
   "name": "express-aggressive-cache",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "An aggressive yet obedient cache middleware for express",
   "homepage": "https://github.com/etienne-martin/express-aggressive-cache",
   "keywords": [
@@ -42,7 +42,7 @@
     "coverage": "coveralls < ./coverage/lcov.info"
   },
   "dependencies": {
-    "cache-control-parser": "^1.0.5",
+    "cache-control-parser": "^1.0.6",
     "lru-cache": "5.1.1",
     "nanoid": "2.1.11",
     "normalize-url": "5.0.0",

@@ -1784,10 +1784,10 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
-cache-control-parser@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/cache-control-parser/-/cache-control-parser-1.0.5.tgz#6e750820d7fb671c9615b74d2293006f136547b8"
-  integrity sha512-6jf+/j8tkpARTtkMHKxJnwAf4kSY3rzklx+f68IaZ4xgVRSCPc5xxpdjpJ9DKW+hHH6aSWiRBISBmUidOfkkoA==
+cache-control-parser@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/cache-control-parser/-/cache-control-parser-1.0.6.tgz#f979e43fb2c734054458f951ea1f0a3f29cdfb2b"
+  integrity sha512-l1m16Wcy+vsS4rmz0hMcjGNHfVWrFRIkL6v3lwj+9w84z0iJl6zbsLQlgmmsjjg4eVcdHPWOveMOm+zo7y0pGw==
 
 callsites@^2.0.0:
   version "2.0.0"
