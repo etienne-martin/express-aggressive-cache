@@ -11,6 +11,7 @@ export const sharedTests = (store: string, purge: Function, delayMs = 0) => {
   test("purge not implemented", async () => {
     await expect(purge("tag")).rejects.toThrow();
   });
+
   test("should cache text responses", async () => {
     const url = buildUrl("/text");
     await request.get(url);
