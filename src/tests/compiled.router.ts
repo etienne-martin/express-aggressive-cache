@@ -1,8 +1,9 @@
 import { Router } from "express";
-import cache from "../../dist"; // <-- Using the compiled version
+import expressAgressiveCache from "../../dist"; // <-- Using the compiled version
 import { sharedRoutes } from "./shared.routes";
 
 export const compiledRouter = Router();
+export const cache = expressAgressiveCache();
 
-compiledRouter.use(cache());
+compiledRouter.use(cache.middleware);
 compiledRouter.use(sharedRoutes);

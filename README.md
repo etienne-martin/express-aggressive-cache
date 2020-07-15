@@ -38,7 +38,7 @@ const app = express();
 app.use(
   cache({
     maxAge: 3600
-  })
+  }).middleware
 );
 
 app.get("/hello", (req, res) => {
@@ -56,7 +56,7 @@ import cache from "express-aggressive-cache";
 
 const app = express();
 
-app.get("/hello", cache(), (req, res) => {
+app.get("/hello", cache().middleware, (req, res) => {
   res.json({
     hello: "world"
   });

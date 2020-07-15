@@ -4,10 +4,13 @@ import { sha256 } from "../utils";
 
 const request = supertest(app);
 
-export const sharedTests = (store: string, delayMs = 0) => {
+export const sharedTests = (store: string, purge: Function, delayMs = 0) => {
   const buildUrl = (url: string) => `/${store}${url}`;
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
+  test("purge not implemented", async () => {
+    await expect(purge("tag")).rejects.toThrow();
+  });
   test("should cache text responses", async () => {
     const url = buildUrl("/text");
     await request.get(url);

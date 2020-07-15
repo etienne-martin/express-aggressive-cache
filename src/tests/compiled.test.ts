@@ -1,3 +1,4 @@
 import { sharedTests } from "./test.shared";
+import { compiledCache as cache } from "./server";
 
-sharedTests("compiled");
+sharedTests("compiled", cache.purge);

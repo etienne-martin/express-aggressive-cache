@@ -1,5 +1,6 @@
 import Redis from "ioredis";
 import { sharedTests } from "./test.shared";
+import { redisCache as cache } from "./server";
 
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
@@ -10,4 +11,4 @@ afterEach(async () => {
   await client.flushall();
 });
 
-sharedTests("redis", 100);
+sharedTests("redis", cache.purge, 100);
