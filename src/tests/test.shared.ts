@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import { app } from "./server";
 import { sha256 } from "../utils";
-import { PurgeFunction } from "../types";
+import { PurgeFunction } from "../index";
 
 const request = supertest(app);
 
