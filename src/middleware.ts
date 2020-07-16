@@ -1,6 +1,12 @@
 import nanoid from "nanoid";
 import { Request, NextFunction } from "express";
-import { CachedResponse, Chunk, ExtendedResponse, Options } from "./types";
+import {
+  CachedResponse,
+  Chunk,
+  ExtendedResponse,
+  Options,
+  PurgeFunction
+} from "./types";
 import { returnCachedResponse } from "./response";
 import { memoryStore } from "./stores/memory.store";
 import { cacheChunk, sealChunks } from "./chunk";
@@ -29,7 +35,7 @@ export const expressAggressiveCache = (options?: Options) => {
   const responseBucket = store<CachedResponse>();
   const chunkBucket = store<Chunk>();
 
-  const purge = async (tag: string) => {
+  const purge: PurgeFunction = async (tag: string) => {
     throw new Error(
       `purge for tag ${tag} not implemented - API could still change - do not use`
     );

@@ -1,10 +1,15 @@
 import supertest from "supertest";
 import { app } from "./server";
 import { sha256 } from "../utils";
+import { PurgeFunction } from "../types";
 
 const request = supertest(app);
 
-export const sharedTests = (store: string, purge: Function, delayMs = 0) => {
+export const sharedTests = (
+  store: string,
+  purge: PurgeFunction,
+  delayMs = 0
+) => {
   const buildUrl = (url: string) => `/${store}${url}`;
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 

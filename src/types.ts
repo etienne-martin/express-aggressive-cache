@@ -20,6 +20,10 @@ type GetCacheKeyAsync = (args: {
 
 export type GetCacheKey = GetCacheKeySync | GetCacheKeyAsync;
 
+export type Chunk = string | Buffer;
+
+export type PurgeFunction = (tag: string) => void;
+
 export interface Options {
   /**
    * If the response has a max-age header, it will use it as the TTL.
@@ -41,8 +45,6 @@ export interface Options {
    */
   debug?: boolean;
 }
-
-export type Chunk = string | Buffer;
 
 export interface CachedResponse {
   requestId: string;
