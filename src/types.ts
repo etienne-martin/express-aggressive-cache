@@ -31,7 +31,7 @@ export type GetCacheTag = GetCacheTagSync | GetCacheTagAsync;
 
 export type Chunk = string | Buffer;
 
-export type PurgeFunction = (tag: string) => void; // Not implemented yet
+export type PurgeFunction = (tag: string) => void;
 
 export interface Options {
   /**

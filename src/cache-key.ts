@@ -6,7 +6,7 @@ const escapeDirectoryTraversalNotation = (url: string) => {
   return url.replace(/\.\./g, "_DOTDOT_");
 };
 
-const UnescapeDirectoryTraversalNotation = (url: string) => {
+const unescapeDirectoryTraversalNotation = (url: string) => {
   return url.replace(/_DOTDOT_/g, "..");
 };
 
@@ -24,5 +24,5 @@ export const defaultGetCacheKey: DefaultGetCacheKey = ({ req }) => {
   const normalizedPath = removeUtmTrackingParameter(absoluteUrl)
     .replace(origin, "")
     .replace("/?", "");
-  return UnescapeDirectoryTraversalNotation(normalizedPath);
+  return unescapeDirectoryTraversalNotation(normalizedPath);
 };
