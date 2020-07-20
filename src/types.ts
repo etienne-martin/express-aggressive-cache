@@ -1,10 +1,7 @@
 import http from "http";
 import { Request, Response } from "express";
 
-export type DefaultGetCacheKey = (args: {
-  req: Request;
-  res: Response;
-}) => string;
+export type DefaultGetCacheKey = (args: { req: Request }) => string;
 
 type GetCacheKeySync = (args: {
   req: Request;
@@ -20,9 +17,21 @@ type GetCacheKeyAsync = (args: {
 
 export type GetCacheKey = GetCacheKeySync | GetCacheKeyAsync;
 
+type GetCacheTagSync = (args: {
+  req: Request;
+  res: Response;
+}) => string | undefined;
+
+type GetCacheTagAsync = (args: {
+  req: Request;
+  res: Response;
+}) => Promise<string | undefined>;
+
+export type GetCacheTag = GetCacheTagSync | GetCacheTagAsync;
+
 export type Chunk = string | Buffer;
 
-export type PurgeFunction = (tag: string) => void;
+export type PurgeFunction = (tag: string) => void; // Not implemented yet
 
 export interface Options {
   /**
@@ -39,6 +48,11 @@ export interface Options {
    * Function used to generate cache keys.
    */
   getCacheKey?: GetCacheKey;
+  /**
+   * Function to obtain the purge tag which will be associated to the cache entry.
+   * Function should return undefined if there is no cache tag for the response.
+   */
+  getCacheTag?: GetCacheTag;
   /**
    * A flag to toggle debug logs
    * Defaults to false.
