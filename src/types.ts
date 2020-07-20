@@ -6,13 +6,13 @@ export type DefaultGetCacheKey = (args: { req: Request }) => string;
 type GetCacheKeySync = (args: {
   req: Request;
   res: Response;
-  normalizedUrl: string;
+  normalizedPath: string;
 }) => string;
 
 type GetCacheKeyAsync = (args: {
   req: Request;
   res: Response;
-  normalizedUrl: string;
+  normalizedPath: string;
 }) => Promise<string>;
 
 export type GetCacheKey = GetCacheKeySync | GetCacheKeyAsync;
@@ -50,7 +50,7 @@ export interface Options {
   getCacheKey?: GetCacheKey;
   /**
    * Function to obtain the purge tag which will be associated to the cache entry.
-   * Function should return undefined if there is no cache tag for the response.
+   * It should return undefined if there is no cache tag for the response.
    */
   getCacheTag?: GetCacheTag;
   /**

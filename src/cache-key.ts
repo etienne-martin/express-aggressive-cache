@@ -2,22 +2,27 @@ import { URL } from "url";
 import normalizeUrl from "normalize-url";
 import { DefaultGetCacheKey } from "./types";
 
-export const defaultGetCacheKey: DefaultGetCacheKey = ({ req }) => {
-  // Escape directory traversal notation
-  const originalUrl = req.originalUrl.replace(/\.\./g, "_DOTDOT_");
-  const url = new URL(originalUrl, "http://localhost").toString();
-  const { origin } = new URL(url);
+const escapeDirectoryTraversalNotation = (url: string) => {
+  return url.replace(/\.\./g, "_DOTDOT_");
+};
 
-  const baseKey = normalizeUrl(url, {
-    // Remove utm tacking parameter
+const UnescapeDirectoryTraversalNotation = (url: string) => {
+  return url.replace(/_DOTDOT_/g, "..");
+};
+
+const removeUtmTrackingParameter = (url: string) => {
+  return normalizeUrl(url, {
     removeQueryParameters: [/^utm_\w+/i]
   });
+};
 
-  const normalizedUrl = baseKey
+export const defaultGetCacheKey: DefaultGetCacheKey = ({ req }) => {
+  const escapedUrl = escapeDirectoryTraversalNotation(req.originalUrl);
+  const absoluteUrl = new URL(escapedUrl, "http://localhost").toString();
+
+  const { origin } = new URL(absoluteUrl);
+  const normalizedPath = removeUtmTrackingParameter(absoluteUrl)
     .replace(origin, "")
-    .replace("/?", "")
-    // Unescape directory traversal notation
-    .replace(/_DOTDOT_/g, "..");
-
-  return `${req.method}:${normalizedUrl}`;
+    .replace("/?", "");
+  return UnescapeDirectoryTraversalNotation(normalizedPath);
 };

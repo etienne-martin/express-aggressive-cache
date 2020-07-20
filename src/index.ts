@@ -7,5 +7,4 @@ export { GetCacheKey, GetCacheTag, PurgeFunction } from "./types";
 
 export type ExpressAggressiveCacheOptions = Options;
 
-export { akamaiGetCacheTag } from "./cache-tag";
 export default expressAggressiveCache;

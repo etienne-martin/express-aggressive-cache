@@ -1,7 +1,7 @@
-import { akamaiGetCacheTag } from "./";
+import { akamaiGetCacheTag } from "./akamai-cache-tag";
 
 describe("Akamai get cache tag", () => {
-  test("Edge-Cache-Tag header set should return header value", async () => {
+  test("Edge-Cache-Tag header should return header value", async () => {
     const HEADER_VALUE = "headerValue";
     expect(
       akamaiGetCacheTag({
