@@ -6,7 +6,7 @@ describe("Akamai get cache tag", () => {
     expect(
       akamaiGetCacheTag({
         res: {
-          getHeader: (name: string) => {
+          get: (name: string) => {
             return name === "Edge-Cache-Tag" ? HEADER_VALUE : undefined;
           }
         }
@@ -17,7 +17,7 @@ describe("Akamai get cache tag", () => {
     expect(
       akamaiGetCacheTag({
         res: {
-          getHeader: () => {
+          get: () => {
             return undefined;
           }
         }
