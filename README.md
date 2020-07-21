@@ -158,6 +158,7 @@ Can be useful if you need to cache multiple variants of the same resource depend
 cache({
   getCacheKey: ({ req, normalizedPath }) => {
     const isAuthenticated = !!req.session.user;
+
     return `${isAuthenticated}:${normalizedPath}`;
   }
 });
@@ -169,6 +170,7 @@ cache({
 cache({
   getCacheKey: ({ normalizedPath }) => {
     const appVersion = process.env.npm_package_version;
+
     return `${appVersion}:${normalizedPath}`;
   }
 });
@@ -178,7 +180,7 @@ cache({
 
 Function to provide the purge tag which will be associated to the cache entry. The tag can later be used with the `PurgeFunction`.
 
-It receives `req` and `res` as input. It should return `undefined` if there is no cache for the cache entry.
+It receives `req` and `res` as input. It should return `undefined` if there is no tag for the cache entry.
 
 **Example** - Sample based on Akamai's `Edge-Cache-Tag` response header:
 
@@ -186,6 +188,7 @@ It receives `req` and `res` as input. It should return `undefined` if there is n
 cache({
   getCacheTag: ({ res }) => {
     const header = res.getHeader("Edge-Cache-Tag");
+
     return header ? String(header) : undefined;
   };
 });
