@@ -94,7 +94,7 @@ export const expressAggressiveCache = (options?: Options) => {
     return false;
   };
 
-  const getChuckFunctions = (res: ExtendedResponse, cacheKey: string) => {
+  const getChunkFunctions = (res: ExtendedResponse, cacheKey: string) => {
     const requestId = nanoid();
     const chunkQueue = new Queue();
 
@@ -153,7 +153,7 @@ export const expressAggressiveCache = (options?: Options) => {
         chunks: []
       };
 
-      const { onFinish, onWrite } = getChuckFunctions(res, cacheKey);
+      const { onFinish, onWrite } = getChunkFunctions(res, cacheKey);
 
       const cachedResponse = await responseBucket.get(cacheKey);
       if (await checkAndHandleCacheHit(cachedResponse, res, cacheKey)) {
