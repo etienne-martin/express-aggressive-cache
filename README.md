@@ -12,7 +12,7 @@ An aggressive yet obedient cache middleware for express.
 
 - Plug and Play
 - Built-in TypeScript support
-- Multiple data stores (in-memory and redis)
+- Multiple data stores (in-memory and Redis)
 - Thoroughly tested
 
 ## Getting Started
@@ -95,7 +95,7 @@ By default, the cache will be stored in memory (RAM). Since everything is stored
 
 Note: In-memory caching is not suitable for applications that scale horizontally as the cache will be duplicated across multiple nodes and can result in a high memory usage within your cluster.
 
-**We recommend using a redis data store if you have multiple instances of your application running behind a load balancer.**
+**We recommend using a Redis data store if you have multiple instances of your application running behind a load balancer.**
 
 #### `max`
 
@@ -115,13 +115,13 @@ cache({
 
 ### `redisStore(options)`
 
-It is recommended that redis be configured with a `allkeys-lru` eviction policy to prevent random keys from being deleted while serving responses.
+It is recommended that Redis be configured with a `allkeys-lru` eviction policy to prevent random keys from being deleted while serving responses.
 
 Note: performance will be impacted when caching large responses like files and images. **We do not recommend caching anything above 5mb.**
 
 #### `client`
 
-An instance of redis or a redis compatible client.
+An instance of Redis or a Redis compatible client.
 
 Known compatible and tested clients:
 
@@ -152,7 +152,7 @@ cache({
 
 Function used to generate cache keys.
 
-It determines how the cache key should be computed, receiving `req`, `res` and `normalizedUrl` as input.
+It determines how the cache key should be computed, receiving `req`, `res` and `normalizedPath` as input.
 
 Can be useful if you need to cache multiple variants of the same resource depending on the specifics of your application.
 
@@ -160,10 +160,10 @@ Can be useful if you need to cache multiple variants of the same resource depend
 
 ```javascript
 cache({
-  getCacheKey: ({ req, normalizedUrl }) => {
+  getCacheKey: ({ req, normalizedPath }) => {
     const isAuthenticated = !!req.session.user;
 
-    return `${isAuthenticated}:${normalizedUrl}`;
+    return `${isAuthenticated}:${normalizedPath}`;
   }
 });
 ```
@@ -172,10 +172,26 @@ cache({
 
 ```javascript
 cache({
-  getCacheKey: ({ normalizedUrl }) => {
+  getCacheKey: ({ normalizedPath }) => {
     const appVersion = process.env.npm_package_version;
 
-    return `${appVersion}:${normalizedUrl}`;
+    return `${appVersion}:${normalizedPath}`;
+  }
+});
+```
+
+#### `getCacheTag`
+
+Function to provide the purge tag which will be associated to the cache entry. The tag can later be used with the `PurgeFunction`.
+
+It receives `req` and `res` as input. It should return `undefined` if there is no tag for the cache entry.
+
+**Example** - Sample based on Akamai's `Edge-Cache-Tag` response header:
+
+```javascript
+cache({
+  getCacheTag: ({ res }): string | undefined => {
+    return res.get("Edge-Cache-Tag");
   }
 });
 ```
@@ -233,7 +249,7 @@ Will be accessible via http://localhost:3000
 
 #### Local Redis Server
 
-A local redis instance is needed when running the test suite. You can use the provided [redis.sh](https://github.com/etienne-martin/express-aggressive-cache/blob/master/redis.sh) script to run a redis container using docker (Make sure docker is installed and running).
+A local Redis instance is needed when running the test suite. You can use the provided [redis.sh](https://github.com/etienne-martin/express-aggressive-cache/blob/master/redis.sh) script to run a Redis container using docker (Make sure docker is installed and running).
 
 ```bash
 ./redis.sh

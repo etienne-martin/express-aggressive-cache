@@ -146,8 +146,8 @@ export const expressAggressiveCache = (options?: Options) => {
         return next();
       }
 
-      const normalizedUrl = defaultGetCacheKey({ req, res });
-      const cacheKey = await getCacheKey({ req, res, normalizedUrl });
+      const normalizedPath = defaultGetCacheKey({ req });
+      const cacheKey = await getCacheKey({ req, res, normalizedPath });
 
       res.aggressiveCache = {
         chunks: []
