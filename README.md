@@ -196,6 +196,22 @@ cache({
 });
 ```
 
+#### `onCacheHit` and `onCacheMiss`
+
+Functions to perform a behavior on a cache hit or miss. For example: set a response header.
+
+If not passed, the following default functions are used:
+
+```javascript
+const onCacheHit: OnCache = ({ req, res }) => {
+  res.setHeader("x-cache", "HIT");
+};
+
+const onCacheMiss: OnCache = ({ req, res }) => {
+  res.setHeader("x-cache", "MISS");
+};
+```
+
 #### `debug`
 
 A flag to toggle debug logs. Defaults to `false`.

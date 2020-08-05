@@ -12,15 +12,25 @@ import { memoryStore } from "./stores/memory.store";
 import { cacheChunk, sealChunks } from "./chunk";
 import { Queue } from "./utils";
 import { defaultGetCacheKey } from "./cache-key";
+import { defaultOnCacheHit, defaultOnCacheMiss } from "./cache-behavior";
 
 const defaultOptions = {
   maxAge: undefined,
   store: memoryStore(),
-  getCacheKey: defaultGetCacheKey
+  getCacheKey: defaultGetCacheKey,
+  onCacheHit: defaultOnCacheHit,
+  onCacheMiss: defaultOnCacheMiss
 };
 
 export const expressAggressiveCache = (options?: Options) => {
-  const { debug, maxAge: defaultMaxAge, store, getCacheKey } = {
+  const {
+    debug,
+    maxAge: defaultMaxAge,
+    store,
+    getCacheKey,
+    onCacheHit,
+    onCacheMiss
+  } = {
     ...defaultOptions,
     ...options
   };
@@ -43,12 +53,14 @@ export const expressAggressiveCache = (options?: Options) => {
 
   const checkAndHandleCacheHit = async (
     cachedResponse: CachedResponse | undefined,
+    req: Request,
     res: ExtendedResponse,
     cacheKey: string
   ) => {
     if (cachedResponse?.isSealed) {
       if (await chunkBucket.has(cachedResponse.chunks)) {
         log("HIT:", cacheKey);
+        await onCacheHit({ req, res });
         await returnCachedResponse(res, cachedResponse, chunkBucket);
         return true;
       } else {
@@ -59,13 +71,14 @@ export const expressAggressiveCache = (options?: Options) => {
   };
 
   const handleCacheMiss = async (
+    req: Request,
     res: ExtendedResponse,
     onFinish: () => void,
     onWrite: (chunk: Chunk | undefined) => void,
     cacheKey: string
   ) => {
-    log("MISS:", cacheKey);
-    res.setHeader("X-Cache", "MISS");
+    log("MISS - key not found:", cacheKey);
+    await onCacheMiss({ req, res });
 
     const originalWrite: any = res.write;
     const originalEnd: any = res.end;
@@ -83,12 +96,13 @@ export const expressAggressiveCache = (options?: Options) => {
     res.on("finish", onFinish);
   };
 
-  const handleNonGetRequestsAsCacheMiss = (
+  const handleNonGetRequestsAsCacheMiss = async (
     req: Request,
     res: ExtendedResponse
   ) => {
     if (req.method !== "GET") {
-      res.setHeader("X-Cache", "MISS");
+      log("MISS - not a GET request");
+      await onCacheMiss({ req, res });
       return true;
     }
     return false;
@@ -142,7 +156,7 @@ export const expressAggressiveCache = (options?: Options) => {
       res: ExtendedResponse,
       next: NextFunction
     ) => {
-      if (handleNonGetRequestsAsCacheMiss(req, res)) {
+      if (await handleNonGetRequestsAsCacheMiss(req, res)) {
         return next();
       }
 
@@ -156,10 +170,10 @@ export const expressAggressiveCache = (options?: Options) => {
       const { onFinish, onWrite } = getChunkFunctions(res, cacheKey);
 
       const cachedResponse = await responseBucket.get(cacheKey);
-      if (await checkAndHandleCacheHit(cachedResponse, res, cacheKey)) {
+      if (await checkAndHandleCacheHit(cachedResponse, req, res, cacheKey)) {
         return;
       } else {
-        await handleCacheMiss(res, onFinish, onWrite, cacheKey);
+        await handleCacheMiss(req, res, onFinish, onWrite, cacheKey);
         next();
       }
     }
