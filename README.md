@@ -75,9 +75,9 @@ Responses containing `no-store`, `private`, `max-age=0` or `s-maxage=0` won't be
 
 The `s-maxage` directive always takes precedence over the `max-age` directive.
 
-## X-Cache
+## x-cache
 
-The middleware will set a response header `X-Cache`. Its value will be `HIT` when a cache hit occurs and the response was obtained from cache otherwise it will be `MISS`.
+By default, the middleware will set a response header `x-cache`. Its value will be `HIT` when a cache hit occurs and the response was obtained from cache otherwise it will be `MISS`. See the `onCacheHit` and `onCacheMiss` options to override this behavior.
 
 ## Options
 
@@ -194,6 +194,22 @@ cache({
     return res.get("Edge-Cache-Tag");
   }
 });
+```
+
+#### `onCacheHit` and `onCacheMiss`
+
+Functions to perform a behavior on a cache hit or miss. For example: set a response header.
+
+If not passed, the following default functions are used:
+
+```javascript
+const onCacheHit: OnCache = ({ req, res }) => {
+  res.setHeader("x-cache", "HIT");
+};
+
+const onCacheMiss: OnCache = ({ req, res }) => {
+  res.setHeader("x-cache", "MISS");
+};
 ```
 
 #### `debug`

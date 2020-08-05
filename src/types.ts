@@ -29,6 +29,12 @@ type GetCacheTagAsync = (args: {
 
 export type GetCacheTag = GetCacheTagSync | GetCacheTagAsync;
 
+type OnCacheSync = (args: { req: Request; res: Response }) => void;
+
+type OnCacheAsync = (args: { req: Request; res: Response }) => Promise<void>;
+
+export type OnCache = OnCacheSync | OnCacheAsync;
+
 export type Chunk = string | Buffer;
 
 export type PurgeFunction = (tag: string) => void;
@@ -53,6 +59,14 @@ export interface Options {
    * It should return undefined if there is no cache tag for the response.
    */
   getCacheTag?: GetCacheTag;
+  /**
+   * Function to perform a behavior on a cache hit. For example: set a response header.
+   */
+  onCacheHit?: OnCache;
+  /**
+   * Function to perform a behavior on a cache miss. For example: set a response header.
+   */
+  onCacheMiss?: OnCache;
   /**
    * A flag to toggle debug logs
    * Defaults to false.
