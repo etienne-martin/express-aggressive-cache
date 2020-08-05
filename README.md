@@ -75,9 +75,9 @@ Responses containing `no-store`, `private`, `max-age=0` or `s-maxage=0` won't be
 
 The `s-maxage` directive always takes precedence over the `max-age` directive.
 
-## X-Cache
+## x-cache
 
-The middleware will set a response header `X-Cache`. Its value will be `HIT` when a cache hit occurs and the response was obtained from cache otherwise it will be `MISS`.
+By default, the middleware will set a response header `x-cache`. Its value will be `HIT` when a cache hit occurs and the response was obtained from cache otherwise it will be `MISS`. See the `onCacheHit` and `onCacheMiss` options to override this behavior.
 
 ## Options
 
