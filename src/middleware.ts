@@ -59,7 +59,7 @@ export const expressAggressiveCache = (options?: Options) => {
     res: ExtendedResponse,
     cacheKey: string
   ) => {
-    if (getCacheTag != undefined) {
+    if (getCacheTag) {
       const cacheTag = await getCacheTag({ req, res });
       if (cacheTag !== undefined) {
         await cacheKeyBucket.set(cacheTag, cacheKey);
