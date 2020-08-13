@@ -7,7 +7,7 @@ describe("Akamai get cache tag", () => {
       akamaiGetCacheTag({
         res: {
           get: (name: string) => {
-            return name === "Edge-Cache-Tag" ? HEADER_VALUE : undefined;
+            return name === "edge-cache-tag" ? HEADER_VALUE : undefined;
           }
         }
       } as any)

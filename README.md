@@ -191,7 +191,7 @@ It receives `req` and `res` as input. It should return `undefined` if there is n
 ```javascript
 cache({
   getCacheTag: ({ res }): string | undefined => {
-    return res.get("Edge-Cache-Tag");
+    return res.get("edge-cache-tag");
   }
 });
 ```
