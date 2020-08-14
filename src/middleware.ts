@@ -7,7 +7,6 @@ import {
   Options,
   PurgeFunction
 } from "./types";
-import { returnCachedResponse } from "./response";
 import { memoryStore } from "./stores/memory.store";
 import { cacheChunk, sealChunks } from "./chunk";
 import { Queue } from "./utils";
@@ -67,6 +66,32 @@ export const expressAggressiveCache = (options?: Options) => {
     }
   };
 
+  const writeChunks = async (
+    res: ExtendedResponse,
+    cachedResponse: CachedResponse
+  ) => {
+    for (const chunkId of cachedResponse.chunks) {
+      const chunk = await chunkBucket.get(chunkId);
+      if (chunk === undefined) throw new Error(`missing chunk: ${chunkId}`);
+      res.write(chunk);
+    }
+  };
+
+  const returnCachedResponse = async (
+    req: Request,
+    res: ExtendedResponse,
+    cachedResponse: CachedResponse
+  ) => {
+    res.status(cachedResponse.statusCode);
+    res.set(cachedResponse.headers);
+
+    await onCacheHit({ req, res });
+
+    await writeChunks(res, cachedResponse);
+
+    res.end();
+  };
+
   const checkAndHandleCacheHit = async (
     cachedResponse: CachedResponse | undefined,
     req: Request,
@@ -76,8 +101,7 @@ export const expressAggressiveCache = (options?: Options) => {
     if (cachedResponse?.isSealed) {
       if (await chunkBucket.has(cachedResponse.chunks)) {
         log("HIT:", cacheKey);
-        await onCacheHit({ req, res });
-        await returnCachedResponse(res, cachedResponse, chunkBucket);
+        await returnCachedResponse(req, res, cachedResponse);
         return true;
       } else {
         log("chunk missing");
