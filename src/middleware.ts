@@ -17,6 +17,7 @@ const defaultOptions = {
   maxAge: undefined,
   store: memoryStore(),
   getCacheKey: defaultGetCacheKey,
+  getCacheTag: undefined,
   onCacheHit: defaultOnCacheHit,
   onCacheMiss: defaultOnCacheMiss
 };
@@ -27,6 +28,7 @@ export const expressAggressiveCache = (options?: Options) => {
     maxAge: defaultMaxAge,
     store,
     getCacheKey,
+    getCacheTag,
     onCacheHit,
     onCacheMiss
   } = {
@@ -43,11 +45,25 @@ export const expressAggressiveCache = (options?: Options) => {
 
   const responseBucket = store<CachedResponse>();
   const chunkBucket = store<Chunk>();
+  const cacheKeyBucket = store<string>();
 
-  const purge: PurgeFunction = async (tag: string) => {
+  const purge: PurgeFunction = async (cacheTag: string) => {
     throw new Error(
-      `purge for tag ${tag} not implemented - API could still change - do not use`
+      `purge for cache tag ${cacheTag} not implemented - API could still change - do not use`
     );
+  };
+
+  const updateCacheKeyBucketOptional = async (
+    req: Request,
+    res: ExtendedResponse,
+    cacheKey: string
+  ) => {
+    if (getCacheTag) {
+      const cacheTag = await getCacheTag({ req, res });
+      if (cacheTag !== undefined) {
+        await cacheKeyBucket.set(cacheTag, cacheKey);
+      }
+    }
   };
 
   const writeChunks = async (
@@ -103,6 +119,7 @@ export const expressAggressiveCache = (options?: Options) => {
   ) => {
     log("MISS - key not found:", cacheKey);
     await onCacheMiss({ req, res });
+    await updateCacheKeyBucketOptional(req, res, cacheKey);
 
     const originalWrite: any = res.write;
     const originalEnd: any = res.end;
