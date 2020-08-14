@@ -19,7 +19,7 @@ const getChunkId = (cacheKey: string, chunk: Chunk) => {
   return `${cacheKey}:${sha256(chunk)}`;
 };
 
-export const purgeChucksAfterResponses = (
+export const purgeChunksAfterResponses = (
   chunkBucket: Store<Chunk>,
   chunkIds: string[]
 ) => {

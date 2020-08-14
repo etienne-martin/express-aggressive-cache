@@ -8,7 +8,7 @@ import {
   PurgeFunction
 } from "./types";
 import { memoryStore } from "./stores/memory.store";
-import { cacheChunk, sealChunks, purgeChucksAfterResponses as purgeChunksAfterResponses } from "./chunk";
+import { cacheChunk, sealChunks, purgeChunksAfterResponses } from "./chunk";
 import { Queue } from "./utils";
 import { defaultGetCacheKey } from "./cache-key";
 import { defaultOnCacheHit, defaultOnCacheMiss } from "./cache-behavior";
