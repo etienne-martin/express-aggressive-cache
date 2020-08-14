@@ -53,6 +53,7 @@ export const expressAggressiveCache = (options?: Options) => {
       await cacheKeyBucket.del(cacheTag);
       const cachedResponse = await responseBucket.get(cacheKey);
       if (cachedResponse !== undefined) {
+        await responseBucket.del(cacheKey);
         purgeChunksAfterResponses(chunkBucket, cachedResponse.chunks);
       }
     }
