@@ -61,7 +61,7 @@ export const expressAggressiveCache = (options?: Options) => {
     }
   };
 
-  const sendCachedResponse = async (
+  const returnCachedResponse = async (
     req: Request,
     res: ExtendedResponse,
     cachedResponse: CachedResponse
@@ -85,7 +85,7 @@ export const expressAggressiveCache = (options?: Options) => {
     if (cachedResponse?.isSealed) {
       if (await chunkBucket.has(cachedResponse.chunks)) {
         log("HIT:", cacheKey);
-        await sendCachedResponse(req, res, cachedResponse);
+        await returnCachedResponse(req, res, cachedResponse);
         return true;
       } else {
         log("chunk missing");
