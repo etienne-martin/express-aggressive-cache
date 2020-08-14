@@ -13,8 +13,8 @@ export const sharedTests = (
   const buildUrl = (url: string) => `/${store}${url}`;
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-  test("purge not implemented", async () => {
-    await expect(purge("tag")).rejects.toThrow();
+  test("purge missing tag does not throw", async () => {
+    await purge("missing tag");
   });
 
   test("should cache text responses", async () => {

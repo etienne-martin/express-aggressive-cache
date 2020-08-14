@@ -8,7 +8,7 @@ import {
   PurgeFunction
 } from "./types";
 import { memoryStore } from "./stores/memory.store";
-import { cacheChunk, sealChunks } from "./chunk";
+import { cacheChunk, sealChunks, purgeChucksAfterResponses as purgeChunksAfterResponses } from "./chunk";
 import { Queue } from "./utils";
 import { defaultGetCacheKey } from "./cache-key";
 import { defaultOnCacheHit, defaultOnCacheMiss } from "./cache-behavior";
@@ -48,9 +48,14 @@ export const expressAggressiveCache = (options?: Options) => {
   const cacheKeyBucket = store<string>();
 
   const purge: PurgeFunction = async (cacheTag: string) => {
-    throw new Error(
-      `purge for cache tag ${cacheTag} not implemented - API could still change - do not use`
-    );
+    const cacheKey = await cacheKeyBucket.get(cacheTag);
+    if (cacheKey !== undefined) {
+      await cacheKeyBucket.del(cacheTag);
+      const cachedResponse = await responseBucket.get(cacheKey);
+      if (cachedResponse !== undefined) {
+        purgeChunksAfterResponses(chunkBucket, cachedResponse.chunks);
+      }
+    }
   };
 
   const updateCacheKeyBucketOptional = async (

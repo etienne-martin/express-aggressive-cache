@@ -37,7 +37,7 @@ export type OnCache = OnCacheSync | OnCacheAsync;
 
 export type Chunk = string | Buffer;
 
-export type PurgeFunction = (tag: string) => void;
+export type PurgeFunction = (tag: string) => Promise<void>;
 
 export interface Options {
   /**
