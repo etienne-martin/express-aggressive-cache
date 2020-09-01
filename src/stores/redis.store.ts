@@ -130,8 +130,12 @@ export const redisStore = (options: RedisStoreOptions) => {
       await lock.unlock();
     };
 
-    const del = async (key: string) => {
-      await client.del(prefixKey(key, prefix));
+    const del = async (...keys: string[]) => {
+      await client.del(
+        ...keys.map(key => {
+          return prefixKey(key, prefix);
+        })
+      );
     };
 
     const store: Store<T> = {

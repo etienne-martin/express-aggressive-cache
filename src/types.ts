@@ -87,7 +87,7 @@ export interface Store<T> {
   has: (keys: string[]) => Promise<boolean>;
   get: (key: string) => Promise<T | undefined>;
   set: (key: string, value: T, maxAge?: number | undefined) => Promise<void>;
-  del: (key: string) => Promise<void>;
+  del: (...key: string[]) => Promise<void>;
 }
 
 export interface ExtendedResponse extends Response {

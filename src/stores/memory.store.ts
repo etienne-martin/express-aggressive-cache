@@ -38,8 +38,10 @@ export const memoryStore = (options?: MemoryStoreOptions) => {
       memoryCache.set(key, value, maxAge ? maxAge * 1000 : undefined);
     };
 
-    const del = async (key: string) => {
-      memoryCache.del(key);
+    const del = async (...keys: string[]) => {
+      keys.forEach(key => {
+        memoryCache.del(key);
+      });
     };
 
     const store: Store<T> = {

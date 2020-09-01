@@ -24,10 +24,8 @@ export const purgeChunksAfterResponses = (
   chunkIds: string[]
 ) => {
   setTimeout(() => {
-    chunkIds.forEach(chunkId => {
-      chunkBucket.del(chunkId);
-    }, CHUNK_AFTER_RESPONSE_DELAY_SECONDS * 1000);
-  });
+    chunkBucket.del(...chunkIds);
+  }, CHUNK_AFTER_RESPONSE_DELAY_SECONDS * 1000);
 };
 
 export const sealChunks = async ({
