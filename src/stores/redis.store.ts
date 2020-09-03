@@ -72,9 +72,12 @@ export const redisStore = (options: RedisStoreOptions) => {
   return <T>() => {
     const has = async (keys: string[]) => {
       const prefixedKeys = keys.map(key => prefixKey(key, prefix));
-      const count = await client.exists(...prefixedKeys);
-
-      return count === keys.length;
+      const exists = await Promise.all(
+        prefixedKeys.map(async prefixedKey => {
+          return (await client.exists(prefixedKey)) == 1;
+        })
+      );
+      return !exists.includes(false);
     };
 
     const get = async (key: string) => {
