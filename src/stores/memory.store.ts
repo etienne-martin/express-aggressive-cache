@@ -26,10 +26,6 @@ export const memoryStore = (options?: MemoryStoreOptions) => {
       memoryCache.del(key);
     };
 
-    const get = async (key: string) => {
-      return memoryCache.get(key);
-    };
-
     const expire = async (key: string, seconds: number) => {
       const value = memoryCache.peek(key);
       if (value !== undefined) {
@@ -39,6 +35,10 @@ export const memoryStore = (options?: MemoryStoreOptions) => {
           memoryCache.set(key, value, seconds * 1000);
         }
       }
+    };
+
+    const get = async (key: string) => {
+      return memoryCache.get(key);
     };
 
     const has = async (keys: string[]) => {

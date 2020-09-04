@@ -1,7 +1,5 @@
 import { Store } from "../types";
 
-const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-
 export const storeSharedTests = (store: <T>() => Store<T>) => {
   const KEY = "key";
   const VALUE = "value";
