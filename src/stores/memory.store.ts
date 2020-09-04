@@ -22,6 +22,25 @@ export const memoryStore = (options?: MemoryStoreOptions) => {
   return <T>() => {
     const memoryCache = new LRU<string, T>({ max });
 
+    const del = async (key: string) => {
+      memoryCache.del(key);
+    };
+
+    const get = async (key: string) => {
+      return memoryCache.get(key);
+    };
+
+    const expire = async (key: string, seconds: number) => {
+      const value = memoryCache.peek(key);
+      if (value !== undefined) {
+        if (seconds <= 0) {
+          memoryCache.del(key);
+        } else {
+          memoryCache.set(key, value, seconds * 1000);
+        }
+      }
+    };
+
     const has = async (keys: string[]) => {
       for (const key of keys) {
         if (!memoryCache.has(key)) return false;
@@ -30,23 +49,16 @@ export const memoryStore = (options?: MemoryStoreOptions) => {
       return true;
     };
 
-    const get = async (key: string) => {
-      return memoryCache.get(key);
-    };
-
     const set = async (key: string, value: T, maxAge: number | undefined) => {
       memoryCache.set(key, value, maxAge ? maxAge * 1000 : undefined);
     };
 
-    const del = async (key: string) => {
-      memoryCache.del(key);
-    };
-
     const store: Store<T> = {
-      has,
+      del,
       get,
-      set,
-      del
+      expire,
+      has,
+      set
     };
 
     return store;
