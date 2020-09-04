@@ -74,7 +74,7 @@ export const redisStore = (options: RedisStoreOptions) => {
       const prefixedKeys = keys.map(key => prefixKey(key, prefix));
       const exists = await Promise.all(
         prefixedKeys.map(async prefixedKey => {
-          return (await client.exists(prefixedKey)) == 1;
+          return (await client.exists(prefixedKey)) === 1;
         })
       );
       return !exists.includes(false);
