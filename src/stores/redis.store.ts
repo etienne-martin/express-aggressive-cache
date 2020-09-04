@@ -70,14 +70,16 @@ export const redisStore = (options: RedisStoreOptions) => {
   });
 
   return <T>() => {
-    const has = async (keys: string[]) => {
-      const prefixedKeys = keys.map(key => prefixKey(key, prefix));
-      const exists = await Promise.all(
-        prefixedKeys.map(async prefixedKey => {
-          return (await client.exists(prefixedKey)) === 1;
+    const del = async (...keys: string[]) => {
+      await client.del(
+        ...keys.map(key => {
+          return prefixKey(key, prefix);
         })
       );
-      return !exists.includes(false);
+    };
+
+    const expire = async (key: string, seconds: number) => {
+      await client.expire(prefixKey(key, prefix), seconds);
     };
 
     const get = async (key: string) => {
@@ -102,6 +104,16 @@ export const redisStore = (options: RedisStoreOptions) => {
       }
 
       throw new Error("Unknown data type");
+    };
+
+    const has = async (keys: string[]) => {
+      const prefixedKeys = keys.map(key => prefixKey(key, prefix));
+      const exists = await Promise.all(
+        prefixedKeys.map(async prefixedKey => {
+          return (await client.exists(prefixedKey)) === 1;
+        })
+      );
+      return !exists.includes(false);
     };
 
     /**
@@ -133,19 +145,12 @@ export const redisStore = (options: RedisStoreOptions) => {
       await lock.unlock();
     };
 
-    const del = async (...keys: string[]) => {
-      await client.del(
-        ...keys.map(key => {
-          return prefixKey(key, prefix);
-        })
-      );
-    };
-
     const store: Store<T> = {
-      has,
+      del,
+      expire,
       get,
-      set,
-      del
+      has,
+      set
     };
 
     return store;
