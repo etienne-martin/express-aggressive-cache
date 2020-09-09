@@ -19,13 +19,13 @@ const getChunkId = (cacheKey: string, chunk: Chunk) => {
   return `${cacheKey}:${sha256(chunk)}`;
 };
 
-export const purgeChunksAfterResponses = (
+export const purgeChunksAfterResponses = async (
   chunkBucket: Store<Chunk>,
   chunkIds: string[]
 ) => {
-  setTimeout(() => {
-    chunkBucket.del(...chunkIds);
-  }, CHUNK_AFTER_RESPONSE_DELAY_SECONDS * 1000);
+  chunkIds.forEach(chunkId => {
+    chunkBucket.expire(chunkId, CHUNK_AFTER_RESPONSE_DELAY_SECONDS);
+  });
 };
 
 export const sealChunks = async ({

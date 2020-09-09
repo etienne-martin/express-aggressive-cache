@@ -22,10 +22,8 @@ export const memoryStore = (options?: MemoryStoreOptions) => {
   return <T>() => {
     const memoryCache = new LRU<string, T>({ max });
 
-    const del = async (...keys: string[]) => {
-      keys.forEach(key => {
-        memoryCache.del(key);
-      });
+    const del = async (key: string) => {
+      memoryCache.del(key);
     };
 
     const expire = async (key: string, seconds: number) => {

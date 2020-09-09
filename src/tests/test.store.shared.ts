@@ -5,14 +5,11 @@ export const storeSharedTests = (store: <T>() => Store<T>) => {
   const VALUE = "value";
 
   const bucket = store<string>();
-  test("store del should delete entries", async () => {
+  test("store del should delete entry", async () => {
     const KEY = "key1";
-    const KEY_2 = "key2";
     await bucket.set(KEY, "value1");
-    await bucket.set(KEY_2, "value2");
-    await bucket.del(KEY, KEY_2);
+    await bucket.del(KEY);
     expect(await bucket.get(KEY)).toEqual(undefined);
-    expect(await bucket.get(KEY_2)).toEqual(undefined);
   });
 
   test("store set and get should return value", async () => {

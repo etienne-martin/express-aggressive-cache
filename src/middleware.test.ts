@@ -1,18 +1,24 @@
-import { mock } from "jest-mock-extended";
+import { mock, MockProxy, any } from "jest-mock-extended";
 import { expressAggressiveCache } from "./middleware";
 import { Request, NextFunction } from "express";
 import { ExtendedResponse, GetCacheTag } from "./types";
 
 let req: Request;
-let res: ExtendedResponse;
-let next: jest.Mock<NextFunction>;
+let res: any;
+let next: any;
 
 beforeEach(() => {
   req = mock<Request>();
   req.method = "GET";
   req.originalUrl = "http://domain.com";
-  res = mock<ExtendedResponse>();
-  next = jest.fn();
+  res = {};
+  res.on = (_, handler) => {
+    res.handler = handler;
+  };
+  res.setHeader = jest.fn();
+  next = () => {
+    res.handler();
+  };
 });
 
 test("getCacheTag option is used", async () => {

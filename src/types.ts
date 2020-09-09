@@ -84,7 +84,7 @@ export interface CachedResponse {
 }
 
 export interface Store<T> {
-  del: (...key: string[]) => Promise<void>;
+  del: (key: string) => Promise<void>;
   expire: (key: string, seconds: number) => Promise<void>;
   get: (key: string) => Promise<T | undefined>;
   has: (keys: string[]) => Promise<boolean>;

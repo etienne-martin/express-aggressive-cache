@@ -70,12 +70,8 @@ export const redisStore = (options: RedisStoreOptions) => {
   });
 
   return <T>() => {
-    const del = async (...keys: string[]) => {
-      await client.del(
-        ...keys.map(key => {
-          return prefixKey(key, prefix);
-        })
-      );
+    const del = async (key: string) => {
+      await client.del(prefixKey(key, prefix));
     };
 
     const expire = async (key: string, seconds: number) => {

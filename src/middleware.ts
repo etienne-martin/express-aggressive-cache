@@ -125,7 +125,6 @@ export const expressAggressiveCache = (options?: Options) => {
   ) => {
     log("MISS - key not found:", cacheKey);
     await onCacheMiss({ req, res });
-    await updateCacheKeyBucketOptional(req, res, cacheKey);
 
     const originalWrite: any = res.write;
     const originalEnd: any = res.end;
@@ -155,7 +154,11 @@ export const expressAggressiveCache = (options?: Options) => {
     return false;
   };
 
-  const getChunkFunctions = (res: ExtendedResponse, cacheKey: string) => {
+  const getResponseFunctions = (
+    req: Request,
+    res: ExtendedResponse,
+    cacheKey: string
+  ) => {
     const requestId = nanoid();
     const chunkQueue = new Queue();
 
@@ -179,7 +182,8 @@ export const expressAggressiveCache = (options?: Options) => {
       }
     };
 
-    const onFinish = () => {
+    const onFinish = async () => {
+      await updateCacheKeyBucketOptional(req, res, cacheKey);
       chunkQueue
         .push(() =>
           sealChunks({
@@ -214,7 +218,7 @@ export const expressAggressiveCache = (options?: Options) => {
         chunks: []
       };
 
-      const { onFinish, onWrite } = getChunkFunctions(res, cacheKey);
+      const { onFinish, onWrite } = getResponseFunctions(req, res, cacheKey);
 
       const cachedResponse = await responseBucket.get(cacheKey);
       if (await checkAndHandleCacheHit(cachedResponse, req, res, cacheKey)) {
