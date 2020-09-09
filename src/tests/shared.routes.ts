@@ -109,7 +109,7 @@ sharedRoutes.get("/exp/max-age", (req, res) => {
 });
 
 sharedRoutes.get("/purge", (req, res) => {
-  res.setHeader("edge-cache-tag", "baa0ddc2-d441-4039-ac2c-ecd32076e0b7")
+  res.setHeader("edge-cache-tag", "baa0ddc2-d441-4039-ac2c-ecd32076e0b7");
   res.send("hello world");
 });
 

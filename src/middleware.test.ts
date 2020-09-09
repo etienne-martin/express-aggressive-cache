@@ -1,7 +1,7 @@
-import { mock, MockProxy, any } from "jest-mock-extended";
+import { mock } from "jest-mock-extended";
 import { expressAggressiveCache } from "./middleware";
-import { Request, NextFunction } from "express";
-import { ExtendedResponse, GetCacheTag } from "./types";
+import { Request } from "express";
+import { GetCacheTag } from "./types";
 
 let req: Request;
 let res: any;
