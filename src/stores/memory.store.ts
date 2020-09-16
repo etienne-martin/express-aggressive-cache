@@ -55,8 +55,8 @@ export const memoryStore = (options?: MemoryStoreOptions) => {
 
     const store: Store<T> = {
       del,
-      get,
       expire,
+      get,
       has,
       set
     };

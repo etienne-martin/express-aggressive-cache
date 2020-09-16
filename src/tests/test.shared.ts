@@ -13,8 +13,19 @@ export const sharedTests = (
   const buildUrl = (url: string) => `/${store}${url}`;
   const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-  test("purge not implemented", async () => {
-    await expect(purge("tag")).rejects.toThrow();
+  test("purge missing tag does not throw", async () => {
+    await purge("missing tag");
+  });
+
+  test("purge function for request with Akamai tag header purges cache entry", async () => {
+    const url = buildUrl("/purge");
+    await request.get(url);
+    await delay(delayMs);
+    await purge("baa0ddc2-d441-4039-ac2c-ecd32076e0b7");
+    await delay(delayMs);
+    const res = await request.get(url);
+    await delay(delayMs);
+    expect(res.header["x-cache"]).toEqual("MISS");
   });
 
   test("should cache text responses", async () => {

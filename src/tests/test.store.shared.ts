@@ -5,9 +5,9 @@ export const storeSharedTests = (store: <T>() => Store<T>) => {
   const VALUE = "value";
 
   const bucket = store<string>();
-
   test("store del should delete entry", async () => {
-    await bucket.set(KEY, VALUE);
+    const KEY = "key1";
+    await bucket.set(KEY, "value1");
     await bucket.del(KEY);
     expect(await bucket.get(KEY)).toEqual(undefined);
   });

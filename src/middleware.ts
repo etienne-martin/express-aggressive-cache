@@ -8,7 +8,7 @@ import {
   PurgeFunction
 } from "./types";
 import { memoryStore } from "./stores/memory.store";
-import { cacheChunk, sealChunks } from "./chunk";
+import { cacheChunk, sealChunks, purgeChunksAfterResponses } from "./chunk";
 import { Queue } from "./utils";
 import { defaultGetCacheKey } from "./cache-key";
 import { defaultOnCacheHit, defaultOnCacheMiss } from "./cache-behavior";
@@ -48,9 +48,15 @@ export const expressAggressiveCache = (options?: Options) => {
   const cacheKeyBucket = store<string>();
 
   const purge: PurgeFunction = async (cacheTag: string) => {
-    throw new Error(
-      `purge for cache tag ${cacheTag} not implemented - API could still change - do not use`
-    );
+    const cacheKey = await cacheKeyBucket.get(cacheTag);
+    if (cacheKey !== undefined) {
+      await cacheKeyBucket.del(cacheTag);
+      const cachedResponse = await responseBucket.get(cacheKey);
+      if (cachedResponse !== undefined) {
+        await responseBucket.del(cacheKey);
+        purgeChunksAfterResponses(chunkBucket, cachedResponse.chunks);
+      }
+    }
   };
 
   const updateCacheKeyBucketOptional = async (
@@ -119,7 +125,6 @@ export const expressAggressiveCache = (options?: Options) => {
   ) => {
     log("MISS - key not found:", cacheKey);
     await onCacheMiss({ req, res });
-    await updateCacheKeyBucketOptional(req, res, cacheKey);
 
     const originalWrite: any = res.write;
     const originalEnd: any = res.end;
@@ -149,7 +154,11 @@ export const expressAggressiveCache = (options?: Options) => {
     return false;
   };
 
-  const getChunkFunctions = (res: ExtendedResponse, cacheKey: string) => {
+  const getResponseFunctions = (
+    req: Request,
+    res: ExtendedResponse,
+    cacheKey: string
+  ) => {
     const requestId = nanoid();
     const chunkQueue = new Queue();
 
@@ -173,7 +182,8 @@ export const expressAggressiveCache = (options?: Options) => {
       }
     };
 
-    const onFinish = () => {
+    const onFinish = async () => {
+      await updateCacheKeyBucketOptional(req, res, cacheKey);
       chunkQueue
         .push(() =>
           sealChunks({
@@ -208,7 +218,7 @@ export const expressAggressiveCache = (options?: Options) => {
         chunks: []
       };
 
-      const { onFinish, onWrite } = getChunkFunctions(res, cacheKey);
+      const { onFinish, onWrite } = getResponseFunctions(req, res, cacheKey);
 
       const cachedResponse = await responseBucket.get(cacheKey);
       if (await checkAndHandleCacheHit(cachedResponse, req, res, cacheKey)) {

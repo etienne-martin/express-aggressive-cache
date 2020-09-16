@@ -10,16 +10,22 @@ import { getMaxAge } from "./utils/cache-control";
  */
 const INCOMPLETE_RESPONSE_TTL = 10;
 
-/**
- * Keep chunks in memory longer than the response itself
- */
-const CHUNK_MAX_AGE_EXTENSION = 10;
+const CHUNK_AFTER_RESPONSE_DELAY_SECONDS = 60;
 
 /**
  * Chunk IDs contains the cache key so that we can have two identical chunks with different expiration
  */
 const getChunkId = (cacheKey: string, chunk: Chunk) => {
   return `${cacheKey}:${sha256(chunk)}`;
+};
+
+export const purgeChunksAfterResponses = async (
+  chunkBucket: Store<Chunk>,
+  chunkIds: string[]
+) => {
+  chunkIds.forEach(chunkId => {
+    chunkBucket.expire(chunkId, CHUNK_AFTER_RESPONSE_DELAY_SECONDS);
+  });
 };
 
 export const sealChunks = async ({
@@ -90,7 +96,9 @@ export const cacheChunk = async ({
   if (!shouldCache(cacheControl)) return;
 
   const maxAge = getMaxAge(cacheControl, defaultMaxAge);
-  const chunkMaxAge = maxAge ? maxAge + CHUNK_MAX_AGE_EXTENSION : undefined;
+  const chunkMaxAge = maxAge
+    ? maxAge + CHUNK_AFTER_RESPONSE_DELAY_SECONDS
+    : undefined;
   const cachedResponse = await responseBucket.get(cacheKey);
 
   if (!cachedResponse) {
