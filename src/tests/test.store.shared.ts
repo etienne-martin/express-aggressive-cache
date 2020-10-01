@@ -1,18 +1,31 @@
 import { Store } from "../types";
 
 export const storeSharedTests = (store: <T>() => Store<T>) => {
+  const KEY = "key";
+  const VALUE = "value";
+
   const bucket = store<string>();
   test("store del should delete entry", async () => {
-    const KEY = "key";
-    await bucket.set(KEY, "value");
+    const KEY = "key1";
+    await bucket.set(KEY, "value1");
     await bucket.del(KEY);
     expect(await bucket.get(KEY)).toEqual(undefined);
   });
 
   test("store set and get should return value", async () => {
-    const KEY = "key";
-    const VALUE = "value";
-    await bucket.set(KEY, "value");
+    await bucket.set(KEY, VALUE);
+    expect(await bucket.get(KEY)).toEqual(VALUE);
+  });
+
+  test("store set and expire with 0 seconds should delete entry", async () => {
+    await bucket.set(KEY, VALUE);
+    await bucket.expire(KEY, 0);
+    expect(await bucket.get(KEY)).toEqual(undefined);
+  });
+
+  test("store set and expire with 1 hour should keep entry", async () => {
+    await bucket.set(KEY, VALUE);
+    await bucket.expire(KEY, 3600);
     expect(await bucket.get(KEY)).toEqual(VALUE);
   });
 };

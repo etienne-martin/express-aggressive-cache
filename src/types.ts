@@ -37,7 +37,7 @@ export type OnCache = OnCacheSync | OnCacheAsync;
 
 export type Chunk = string | Buffer;
 
-export type PurgeFunction = (tag: string) => void;
+export type PurgeFunction = (tag: string) => Promise<void>;
 
 export interface Options {
   /**
@@ -84,10 +84,11 @@ export interface CachedResponse {
 }
 
 export interface Store<T> {
-  has: (keys: string[]) => Promise<boolean>;
-  get: (key: string) => Promise<T | undefined>;
-  set: (key: string, value: T, maxAge?: number | undefined) => Promise<void>;
   del: (key: string) => Promise<void>;
+  expire: (key: string, seconds: number) => Promise<void>;
+  get: (key: string) => Promise<T | undefined>;
+  has: (keys: string[]) => Promise<boolean>;
+  set: (key: string, value: T, maxAge?: number | undefined) => Promise<void>;
 }
 
 export interface ExtendedResponse extends Response {

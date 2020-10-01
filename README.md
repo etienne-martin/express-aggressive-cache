@@ -75,6 +75,26 @@ Responses containing `no-store`, `private`, `max-age=0` or `s-maxage=0` won't be
 
 The `s-maxage` directive always takes precedence over the `max-age` directive.
 
+## Purge function
+
+The cache object provides an *async* purge function to remove a cache entry based on a previously passed cache tag. See the `getCacheTag` option. The cache entry associated with the cache tag will be removed immediately. It will take at least a minute for all memory associated with the cache entry to be freed.
+
+**Example** - purge the cache entry for a unique cache tag previously returned by `getCacheTag`
+
+```javascript
+import cache from "express-aggressive-cache";
+
+const myCache = cache()
+
+// usage of myCache.middleware
+
+const purgeEndpoint = async () => {
+  await myCache.purge("c341fbb1-a6f6-4a21-8949-c84017da27dd");
+}
+
+```
+
+
 ## x-cache
 
 By default, the middleware will set a response header `x-cache`. Its value will be `HIT` when a cache hit occurs and the response was obtained from cache otherwise it will be `MISS`. See the `onCacheHit` and `onCacheMiss` options to override this behavior.
@@ -182,7 +202,7 @@ cache({
 
 #### `getCacheTag`
 
-Function to provide the purge tag which will be associated to the cache entry. The tag can later be used with the `PurgeFunction`.
+Function to provide the purge tag which will be associated to the cache entry. The tag can later be used with the cache `purge` function. The cache tag should be unique for the cache entry. If not, only the latest cache entry will be purgeable.
 
 It receives `req` and `res` as input. It should return `undefined` if there is no tag for the cache entry.
 
