@@ -54,19 +54,22 @@ export const sealChunks = async ({
 
   delete headers["set-cookie"];
 
-  await responseBucket.set(
-    cacheKey,
-    {
-      ...cachedResponse,
-      chunks,
-      statusCode,
-      headers,
-      isSealed: true
-    },
-    cachedResponse.maxAge
-  );
-
-  log("SEALED CACHE:", cacheKey);
+  try {
+    await responseBucket.set(
+      cacheKey,
+      {
+        ...cachedResponse,
+        chunks,
+        statusCode,
+        headers,
+        isSealed: true
+      },
+      cachedResponse.maxAge
+    );
+    log("SEALED CACHE:", cacheKey);
+  } catch (error) {
+    log(error);
+  }
 };
 
 export const cacheChunk = async ({
