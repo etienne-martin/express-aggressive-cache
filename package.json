@@ -58,7 +58,7 @@
     "@types/ioredis": "4.14.7",
     "@types/jest": "26.0.9",
     "@types/lru-cache": "5.1.0",
-    "@types/nanoid": "2.1.0",
+    "@types/nanoid": "3.0.0",
     "@types/redlock": "4.0.1",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "2.11.0",

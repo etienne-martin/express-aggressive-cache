@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import path from "path";
-import nanoid from "nanoid";
+import { nanoid } from "nanoid";
 
 export const sharedRoutes = Router();
 

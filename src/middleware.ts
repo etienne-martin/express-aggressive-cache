@@ -1,4 +1,4 @@
-import nanoid from "nanoid";
+import { nanoid } from "nanoid";
 import { Request, NextFunction } from "express";
 import {
   CachedResponse,
